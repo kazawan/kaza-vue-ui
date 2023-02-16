@@ -99,7 +99,7 @@
 
 
 import { onMounted, watch, ref, computed } from 'vue';
-import { useGetLen } from '../../hooks/SvgGetLen/usegetlen'
+// import { useGetLen } from '../../hooks/SvgGetLen/usegetlen'
 let total = 564.5732421875
 let per = total / 100
 
