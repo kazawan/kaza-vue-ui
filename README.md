@@ -18,7 +18,7 @@ import bar from './components/kazaUI/ProgressBar/kazaProgressBar.vue'
 <bar />
 ```
 
-##:floppy_disk:Api
+## :floppy_disk:Api
 
 ```
 <bar width="200px" height="200px" :count='getCount' barColor="#02C874" boardColor="000" title="usage" titleFont_size="20px"
