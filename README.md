@@ -25,15 +25,15 @@ import bar from './components/kazaUI/ProgressBar/kazaProgressBar.vue'
       titleTop="32%" />
 ```
 
-|   |   api | 类型   | 默认值 | 
-| :------: | :------: | :------:  | :------:   |
-| 1    | width   | String   | '150px'  |
-| 2    | height   | String   |'150px' |
-| 3    | count   | Number   | 0 |
-| 4    | barColor   | String   |'#1e4adb'|
-| 5    | font_size   | String   |'35px' |
-| 6    | boardColor   | String   |'#ccc'|
-| 7    | title   | String   |' ' |
-| 8    | titleTop   | String   |'35%' |
-| 9    | titleFont_size   | String   |'10px'|
+|  :clipboard: | :bar_chart: api | :pushpin:类型   | :pencil2:默认值 | :ledger:备注 |
+| :------: | :------: | :------:  | :------:   | :------:   |
+| 1    | width   | String   | '150px'  | 包住svg的div的宽度  |
+| 2    | height   | String   |'150px' | 包住svg的div的高度  |
+| 3    | count   | Number   | 0 | 中间那个数字 |
+| 4    | font_size   | String   |'35px' | 中间那个数字的字体大小 |
+| 5    | barColor   | String   |'#1e4adb'| 进度条的颜色 |
+| 6    | boardColor   | String   |'#ccc'| 边框的颜色 |
+| 7    | title   | String   |' ' | 自定义标题 |
+| 8    | titleTop   | String   |'35%' | 标题高度 |
+| 9    | titleFont_size   | String   |'10px'| 标题字体大小 |
 
