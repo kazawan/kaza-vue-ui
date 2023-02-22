@@ -16,7 +16,6 @@
         </svg>
     </div>
 </template>
-  
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap');
 
@@ -173,7 +172,7 @@ const getFont_size = computed(()=>{
 })
 
 const getBoardColor = computed(()=>{
-    console.log(props.boardColor.startsWith('#'))
+    // console.log(props.boardColor.startsWith('#'))
     if(!props.boardColor.startsWith('#')){
         return '#' + props.boardColor
     }
