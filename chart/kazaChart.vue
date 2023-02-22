@@ -12,7 +12,7 @@
             </defs>
             <text text-anchor="middle" x="300" y="-20" fill="#fff" font-size="24">{{ title }} </text>
             <g transform="translate(0, 100) scale(1,-1)">
-                <path fill="none" class="chart" stroke="url(#gradient)" stroke-width="10" stroke-linejoin="round"
+                <path fill="none" class="chart" stroke="url(#gradient)" stroke-width="5" stroke-linejoin="round"
                     stroke-linecap="round" :d="refreshdata"></path>
             </g>
 
@@ -20,7 +20,7 @@
 
     </div>
 </template>
-
+//todo 添加item 的value 显示
 <script setup>
 import { ref, computed, onMounted, watchEffect, watch } from 'vue';
 
@@ -72,26 +72,36 @@ const props = defineProps({
 
 onMounted(() => {
     getdata()
-    // console.log(typeof props.padding)
-    normalize()
+    
 })
 
 
 
 
-
+let time =0;
 //todo 判断数字在范围内的比例
 const normalize = () => {
+    // console.log(props.data)
+    let temp = [];
     // console.log('normalize')
     props.data.forEach((item, i) => {
 
         //    let temp =  Math.floor((item['value'] / (props.max_ranger - props.min_ranger)) * 100)
         // console.log(typeof props.min_ranger)
-        let temp = testnor(item['value'], Number(props.min_ranger), Number(props.max_ranger))
+        // let temp = testnor(item['value'], Number(props.min_ranger), Number(props.max_ranger))
+        let data = testnor(Number(item['value']),Number(props.min_ranger) ,Number(props.max_ranger) )
+        
 
-
-        item['value'] = temp
+        // item['value'] = parseInt(temp) 
+        temp.push({
+            "item":item['item'],
+            "value":parseInt(data)
+            
+        })
     })
+    // console.log('temp',temp)
+    return temp
+
 }
 
 function testnor(num, min, max) {
@@ -116,8 +126,8 @@ function scaleCreate(breakPoint, position) {
     let offset = 5
     text1.setAttribute('text-anchor', 'middle')
     text1.setAttribute('x', breakPoint / 2);
-
     text1.setAttribute('fill', '#fff')
+    text1.style.fontSize = '8px'
     switch (position) {
         case 'max':
             text1.innerHTML = props.max_ranger
@@ -143,9 +153,12 @@ function scaleCreate(breakPoint, position) {
     return text1
 }
 
+
+
 const datainit = () => {
     line.value = 'M'
-
+    let temp = normalize()
+    // console.log('temp',temp)
     // let breakPoint = Math.floor((600 - padding * 2) / data.length);
     let breakPoint = Math.floor(600 / (props.data.length + 1));
     if (props.scale === 'true') {
@@ -157,7 +170,7 @@ const datainit = () => {
     // console.log(breakPoint)
     for (let i = 0; i < props.data.length; i++) {
         // line.value = line.value + (data[i]['id'] * breakPoint) + ',' + data[i]['value'] + ' '
-        line.value = line.value + ((i + 1) * breakPoint) + ',' + props.data[i]['value'] + ' '
+        line.value = line.value + ((i + 1) * breakPoint) + ',' + Math.floor(temp[i]['value']) + ' '
         // console.log(line.value)
         let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         text.setAttribute('text-anchor', 'middle');
@@ -173,10 +186,11 @@ const datainit = () => {
 }
 
 
-
+let timestamp = 0
 watch(
     line, () => {
-
+        
+        // console.log(line.value,timestamp++)
         let text = document.querySelectorAll('.' + props.id + 'chartItem')
         text.forEach((e, i) => {
             if (e.innerHTML != props.data[i]['item']) {
@@ -198,8 +212,10 @@ const getdata = () => {
 
 const refreshdata = computed(() => {
     // console.log('refresh')
-    normalize()
+    
     line.value = 'M'
+    let temp = normalize()
+    console.table('temp',temp)
     // console.log('props',props.data)
     // let breakPoint = Math.floor((600 - padding * 2) / data.length);
     let breakPoint = Math.floor(600 / (props.data.length + 1));
@@ -207,7 +223,7 @@ const refreshdata = computed(() => {
     // console.log(breakPoint)
     for (let i = 0; i < props.data.length; i++) {
         // line.value = line.value + (data[i]['id'] * breakPoint) + ',' + data[i]['value'] + ' '
-        line.value = line.value + ((i + 1) * breakPoint) + ',' + Math.floor(props.data[i]['value']) + ' '
+        line.value = line.value + ((i + 1) * breakPoint) + ',' + Math.floor(temp[i]['value']) + ' '
 
 
     }
