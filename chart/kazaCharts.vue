@@ -31,7 +31,7 @@
 
 <script setup>
 import { onMounted, ref, computed, watch, watchEffect } from 'vue';
-
+const chartWidth = 600;
 let debug = true
 const isdebug = () => {
     if (debug) {
@@ -89,32 +89,19 @@ const getLine = computed(() => {
     
     for (let i = 0; i < props.options.value.length; i++) {
         if(i===0){
-            line.value = line.value + ' ' + (breakPoint * i) + ',' + data[i] + ' '
+            // line.value = line.value + ' ' + (breakPoint * i) + ',' + data[i] + ' '
+            line.value = ` ${line.value} ${middlePoint(i)},${data[i]} `
         }else{
-            line.value = line.value + 'C' + middlePoint(i) + ',' + data[i-1] + ' ' + middlePoint(i) + ',' + data[i] + ' ' + crulBreakPoint(i) + ',' + data[i] + ' '
+            let cPoint = `C${middlePoint(i)},${data[i-1]} ${middlePoint(i)},${data[i]} `
+            let crulPoint = `${crulBreakPoint(i)},${data[i]} `
+            line.value = `${line.value}${cPoint} ${crulPoint}`
+            // line.value = line.value + 'C' + middlePoint(i) + ',' + data[i-1] + ' ' + middlePoint(i) + ',' + data[i] + ' ' + crulBreakPoint(i) + ',' + data[i] + ' '
         }
     }
     isdebugRef([breakPoint, line.value], ['breakPoint', 'line.value'])
     return line.value
 
 })
-
-// watchEffect(() => {
-//     isdebugRef([props.options], ['props.optons'])
-// })
-
-
-const chartWidth = 600;
-
-
-
-
-onMounted(() => {
-
-    
-})
-
-
 
 
 
@@ -174,6 +161,6 @@ onMounted(() => {
 }
 
 .ani {
-    transition: .1s all ease-in-out;
+    // transition: .1s all ease-in-out;
 }
 </style>
