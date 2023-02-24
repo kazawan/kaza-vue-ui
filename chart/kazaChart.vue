@@ -12,7 +12,7 @@
             </defs>
             <text text-anchor="middle" x="300" y="-20" fill="#fff" font-size="24">{{ title }} </text>
             <g transform="translate(0, 100) scale(1,-1)">
-                <path fill="none" class="chart" stroke="url(#gradient)" stroke-width="5" stroke-linejoin="round"
+                <path fill="none" class="chart" stroke="#fff" stroke-width="5" stroke-linejoin="round"
                     stroke-linecap="round" :d="refreshdata"></path>
             </g>
 
@@ -161,7 +161,7 @@ function scaleCreate(breakPoint, position) {
 const datainit = () => {
     line.value = 'M'
     let temp = normalize()
-    // console.log('temp',temp)
+    // console.log('inittemp',temp)
     // let breakPoint = Math.floor((600 - padding * 2) / data.length);
     let breakPoint = Math.floor(600 / (props.data.length + 1));
     if (props.scale === 'true') {
@@ -218,7 +218,7 @@ const refreshdata = computed(() => {
     
     line.value = 'M'
     let temp = normalize()
-    console.table('temp',temp)
+    // console.table('reftemp',temp)
     // console.log('props',props.data)
     // let breakPoint = Math.floor((600 - padding * 2) / data.length);
     let breakPoint = Math.floor(600 / (props.data.length + 1));
