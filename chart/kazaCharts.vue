@@ -76,17 +76,22 @@ const line = ref('M0,0')
 
 const getLine = computed(() => {
     line.value = 'M'
-    let breakPoint = Math.floor(chartWidth / (props.options.value.length - 1))
+    let data = props.options.value
+    let breakPoint = Math.floor(chartWidth / (data.length - 1))
     let middlePoint = (i)=>{
        let res = (breakPoint * i ) - (breakPoint/2)
         return res
     }
-    let data = props.options.value
+    let crulBreakPoint = (i)=>{
+        let res = breakPoint * i
+        return res
+    }
+    
     for (let i = 0; i < props.options.value.length; i++) {
         if(i===0){
             line.value = line.value + ' ' + (breakPoint * i) + ',' + data[i] + ' '
         }else{
-            line.value = line.value + 'C' + middlePoint(i) + ',' + data[i-1] + ' ' + middlePoint(i) + ',' + data[i] + ' ' + (breakPoint * i) + ',' + data[i] + ' '
+            line.value = line.value + 'C' + middlePoint(i) + ',' + data[i-1] + ' ' + middlePoint(i) + ',' + data[i] + ' ' + crulBreakPoint(i) + ',' + data[i] + ' '
         }
     }
     isdebugRef([breakPoint, line.value], ['breakPoint', 'line.value'])
@@ -100,36 +105,13 @@ const getLine = computed(() => {
 
 
 const chartWidth = 600;
-const drawLine = () => {
-    line.value = 'M'
-    let breakPoint = Math.floor(chartWidth / (props.options.value.length - 1))
-    let data = props.options.value
-    let Qpoint = breakPoint / 2
-    for (let i = 0; i < props.options.value.length; i++) {
-        if (i === 0) {
-            line.value = line.value + (breakPoint * i) + ',' + data[i] + ' '
-        } else if (i % 2 != 0 && i != 0) {
 
-            line.value = line.value + ' ' + 'Q' + (breakPoint * i) + ',' + data[i] + ' '
-        } else if (i % 2 == 0) {
-            line.value = line.value + (breakPoint * i) + ',' + data[i] + ' '
-        }
-
-
-
-
-
-    }
-    isdebugRef([line.value], ['lineValue'])
-
-
-}
 
 
 
 onMounted(() => {
 
-    // drawLine()
+    
 })
 
 
