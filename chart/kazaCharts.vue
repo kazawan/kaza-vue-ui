@@ -27,11 +27,7 @@ import { onMounted, ref, computed, watch, watchEffect } from 'vue';
 
 
 onMounted(() => {
-    
-    
-
     createNode()
-
     addEvent()
     let test = document.querySelector('.test')
 })
@@ -96,7 +92,7 @@ const createNode = () => {
         // block.setAttribute('stroke-width','2')
         block.setAttribute('fill','transparent')
         block.classList = 'blockitem'
-        g.appendChild(block)
+        
         
         
         //这是画标记点
@@ -133,7 +129,7 @@ const createNode = () => {
         t.innerHTML = data[i].toString()
         t.style.opacity = 0
         chart.append(t)
-
+        g.appendChild(block)
 
     })
 }
@@ -269,8 +265,11 @@ const getLine = computed(() => {
 .inlineBlock {
     // margin-left: 10px;
     // margin-right: 10px;
-    border: 1px solid #ccc;
+    border: 1px dotted #ccc;
     overflow: hidden;
+    box-shadow:1px 2px 5px 2px #ccc;
+    filter: blur(.5px);
+    
 }
 
 .box {
