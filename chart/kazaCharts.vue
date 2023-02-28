@@ -22,6 +22,7 @@
 
 
 <script setup>
+//todo 添加padding 
 import { onMounted, ref, computed, watch, watchEffect } from 'vue';
 
 
@@ -58,14 +59,19 @@ const addEvent = ()=>{
         let item = document.querySelectorAll('.item')
         let itemdata = document.querySelectorAll('.itemdata')
 
-        el.addEventListener('mouseover', (e) => {
-
+        el.addEventListener('mouseenter', (e) => {
+            el.setAttribute('fill','#00000030')
+            el.style.opacity = .3
             item[i].style.opacity = 1
             itemdata[i].style.opacity = 1
+            
         })
-        el.addEventListener('mouseout', (e) => {
+        el.addEventListener('mouseleave', (e) => {
+            el.setAttribute('fill','#cccccc00')
+            el.style.opacity = 0
             item[i].style.opacity = 0
             itemdata[i].style.opacity = 0
+            
         })
     })
 
@@ -83,9 +89,9 @@ const createNode = () => {
         //这是区块
         let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         block.setAttribute('x',((breakPoint * i ) - Math.floor(breakPoint/2)).toString())
-        block.setAttribute('y','0')
+        block.setAttribute('y','-50')
         block.setAttribute('width',breakPoint.toString())
-        block.setAttribute('height','100')
+        block.setAttribute('height','200')
         // block.setAttribute('stroke','#000')
         // block.setAttribute('stroke-width','2')
         block.setAttribute('fill','transparent')
@@ -111,7 +117,8 @@ const createNode = () => {
         line.setAttribute('stroke-width', '1')
         line.setAttribute('stroke-linejoin', 'round')
         line.setAttribute('stroke-linecap', 'round')
-        line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
+        // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
+        line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
         line.classList = 'item'
         line.style.opacity = 0
         g.appendChild(line)
@@ -136,6 +143,7 @@ watch(
         let breakPoint = Math.floor(chartWidth / (props.options.value.length - 1))
         let item = document.querySelectorAll('.item')
         let itemdata = document.querySelectorAll('.itemdata')
+
         // let points = document.querySelectorAll('.points')
         let blockitem = document.querySelectorAll('.blockitem')
         
@@ -145,11 +153,15 @@ watch(
         //     itemdata[i].innerHTML = props.options.value[i].toString()
         //     itemdata[i].style.opacity = 0
         // })
+        
         blockitem.forEach((el, i) => {
             el.setAttribute('d', `M${breakPoint * i},${props.options.value[i]} ${breakPoint * (i)},${props.options.value[i]}`)
             itemdata[i].setAttribute('y',(100 - props.options.value[i] - 20).toString())
-            itemdata[i].innerHTML = props.options.value[i].toString()
-            itemdata[i].style.opacity = 0
+            itemdata[i].innerHTML = props.options.value[i]
+            
+            item[i].setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${props.options.value[i]}`)
+            
+            
         })
         addEvent()
     }
@@ -306,7 +318,7 @@ const getLine = computed(() => {
 }
 
 .item {
-    opacity: 0;
+    
     transition: 1s all ease-in-out;
     caret-color: transparent
 }
