@@ -1,6 +1,5 @@
 <template>
     <div class="box inlineBlock">
-
         <svg class="box chart" viewBox="0 0 600 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="gradient">
@@ -10,17 +9,10 @@
                     <stop offset="100%" stop-color="#d9f2f6" />
                 </linearGradient>
             </defs>
-            <text class="ani" text-anchor="middle" x="570" :y="getLastValueY" fill="#000" font-size="24">{{ getLastValue }}
-            </text>
-            <g transform="translate(0, 130) scale(1,-1)">
-                <path fill="none" class="chart ani" stroke="#50d99f" stroke-width="10" stroke-linejoin="round"
+            <g class="g" transform="translate(0, 100) scale(1,-1)">
+                <path fill="none" class="ani" stroke="#50d99f" stroke-width="10" stroke-linejoin="round"
                     stroke-linecap="round" :d='getLine'></path>
-                <!-- <path fill="none" class="chart ani" stroke="#50d99f" stroke-width="10" stroke-linejoin="round"
-                    stroke-linecap="round" d='M0,0 C50,0 50,100
-                                              100,100  C150,100 150,0
-                                              200,0 C250,0 250,50 
-                                              300,50
-                                                '></path> -->
+
             </g>
 
         </svg>
@@ -31,8 +23,156 @@
 
 <script setup>
 import { onMounted, ref, computed, watch, watchEffect } from 'vue';
+
+
+onMounted(() => {
+    
+    
+
+    createNode()
+
+    addEvent()
+    let test = document.querySelector('.test')
+})
+
+const addEvent = ()=>{
+    let blockitem = document.querySelectorAll('.blockitem')
+    
+    let nodePoint = document.querySelectorAll('.points')
+    let chart = document.querySelector('.chart')
+    // nodePoint.forEach((el, i) => {
+    //     let item = document.querySelectorAll('.item')
+    //     let itemdata = document.querySelectorAll('.itemdata')
+
+    //     el.addEventListener('mouseover', (e) => {
+
+    //         item[i].style.opacity = 1
+    //         itemdata[i].style.opacity = 1
+    //     })
+    //     el.addEventListener('mouseout', (e) => {
+    //         item[i].style.opacity = 0
+    //         itemdata[i].style.opacity = 0
+    //     })
+    // })
+    blockitem.forEach((el, i) => {
+        let item = document.querySelectorAll('.item')
+        let itemdata = document.querySelectorAll('.itemdata')
+
+        el.addEventListener('mouseover', (e) => {
+
+            item[i].style.opacity = 1
+            itemdata[i].style.opacity = 1
+        })
+        el.addEventListener('mouseout', (e) => {
+            item[i].style.opacity = 0
+            itemdata[i].style.opacity = 0
+        })
+    })
+
+    
+}
+
+const createNode = () => {
+    let data = getData.value.value
+    let breakPoint = Math.floor(chartWidth / (data.length - 1))
+    data.forEach((item, i) => {
+        let chart = document.querySelector('.chart')
+        let svg = document.querySelector('svg')
+        let g = document.querySelector('.g')
+        let value = 100 - item
+        //这是区块
+        let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        block.setAttribute('x',((breakPoint * i ) - Math.floor(breakPoint/2)).toString())
+        block.setAttribute('y','0')
+        block.setAttribute('width',breakPoint.toString())
+        block.setAttribute('height','100')
+        // block.setAttribute('stroke','#000')
+        // block.setAttribute('stroke-width','2')
+        block.setAttribute('fill','transparent')
+        block.classList = 'blockitem'
+        g.appendChild(block)
+        
+        
+        //这是画标记点
+        // let p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        // p.setAttribute('fill', 'none')
+        // p.setAttribute('stroke', '#fff')
+        // p.setAttribute('stroke-width', '10')
+        // p.setAttribute('stroke-linejoin', 'round')
+        // p.setAttribute('stroke-linecap', 'round')
+        // p.setAttribute('d', `M${breakPoint * i},${item} ${breakPoint * (i)},${item}`)
+        // p.classList = 'points'
+
+        // g.appendChild(p)
+        //这是画竖线
+        let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        line.setAttribute('fill', 'none')
+        line.setAttribute('stroke', '#ccc')
+        line.setAttribute('stroke-width', '1')
+        line.setAttribute('stroke-linejoin', 'round')
+        line.setAttribute('stroke-linecap', 'round')
+        line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
+        line.classList = 'item'
+        line.style.opacity = 0
+        g.appendChild(line)
+        //这是画数据
+        let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+        t.setAttribute('text-anchor', 'middle')
+        t.setAttribute('x', (breakPoint * i).toString())
+        t.setAttribute('y', (100 - data[i] - 20).toString())
+        t.setAttribute('fill', '#000000')
+        t.setAttribute('font-size', '32')
+        t.classList = 'itemdata'
+        t.innerHTML = data[i].toString()
+        t.style.opacity = 0
+        chart.append(t)
+
+
+    })
+}
+
+watch(
+    props.options,(o,n)=>{
+        let breakPoint = Math.floor(chartWidth / (props.options.value.length - 1))
+        let item = document.querySelectorAll('.item')
+        let itemdata = document.querySelectorAll('.itemdata')
+        // let points = document.querySelectorAll('.points')
+        let blockitem = document.querySelectorAll('.blockitem')
+        
+        // points.forEach((el, i) => {
+        //     el.setAttribute('d', `M${breakPoint * i},${props.options.value[i]} ${breakPoint * (i)},${props.options.value[i]}`)
+        //     itemdata[i].setAttribute('y',(100 - props.options.value[i] - 20).toString())
+        //     itemdata[i].innerHTML = props.options.value[i].toString()
+        //     itemdata[i].style.opacity = 0
+        // })
+        blockitem.forEach((el, i) => {
+            el.setAttribute('d', `M${breakPoint * i},${props.options.value[i]} ${breakPoint * (i)},${props.options.value[i]}`)
+            itemdata[i].setAttribute('y',(100 - props.options.value[i] - 20).toString())
+            itemdata[i].innerHTML = props.options.value[i].toString()
+            itemdata[i].style.opacity = 0
+        })
+        addEvent()
+    }
+)
+
+//这样可以提供默认值，不填也可以。。
+const temp = ref({})
+const getData = computed(() => {
+    temp.value = {
+        title: props.options.title || ' ',
+        width: props.options.width || 300,
+        height: props.options.height || 60,
+        min_ranger: props.options.min_ranger || 0,
+        max_ranger: props.options.max_ranger || 100,
+        value: props.options.value || null
+    }
+    return temp.value
+})
+
+
+
 const chartWidth = 600;
-let debug = true
+let debug = !true
 const isdebug = () => {
     if (debug) {
         console.log(props.options)
@@ -65,7 +205,8 @@ const props = defineProps(
     }
 )
 const getWidth = computed(() => {
-    return props.options.width + 'px'
+    // return props.options.width + 'px'
+    return temp.value.width + 'px'
 })
 const getHeight = computed(() => {
     return props.options.height + 'px'
@@ -78,21 +219,21 @@ const getLine = computed(() => {
     line.value = 'M'
     let data = props.options.value
     let breakPoint = Math.floor(chartWidth / (data.length - 1))
-    let middlePoint = (i)=>{
-       let res = (breakPoint * i ) - (breakPoint/2)
+    let middlePoint = (i) => {
+        let res = (breakPoint * i) - (breakPoint / 2)
         return res
     }
-    let crulBreakPoint = (i)=>{
+    let crulBreakPoint = (i) => {
         let res = breakPoint * i
         return res
     }
-    
+
     for (let i = 0; i < props.options.value.length; i++) {
-        if(i===0){
+        if (i === 0) {
             // line.value = line.value + ' ' + (breakPoint * i) + ',' + data[i] + ' '
             line.value = ` ${line.value} ${middlePoint(i)},${data[i]} `
-        }else{
-            let cPoint = `C${middlePoint(i)},${data[i-1]} ${middlePoint(i)},${data[i]} `
+        } else {
+            let cPoint = `C${middlePoint(i)},${data[i - 1]} ${middlePoint(i)},${data[i]} `
             let crulPoint = `${crulBreakPoint(i)},${data[i]} `
             line.value = `${line.value}${cPoint} ${crulPoint}`
             // line.value = line.value + 'C' + middlePoint(i) + ',' + data[i-1] + ' ' + middlePoint(i) + ',' + data[i] + ' ' + crulBreakPoint(i) + ',' + data[i] + ' '
@@ -116,7 +257,7 @@ const getLine = computed(() => {
 .inlineBlock {
     // margin-left: 10px;
     // margin-right: 10px;
-    // border: 1px solid #ccc;
+    border: 1px solid #ccc;
     overflow: hidden;
 }
 
@@ -162,5 +303,15 @@ const getLine = computed(() => {
 
 .ani {
     // transition: .1s all ease-in-out;
+}
+
+.item {
+    opacity: 0;
+    transition: 1s all ease-in-out;
+    caret-color: transparent
+}
+
+.itemdata {
+    &:extend(.item);
 }
 </style>
