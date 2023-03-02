@@ -1,6 +1,6 @@
 <template>
     <div class=" inlineBlock">
-        <svg class="box chart" viewBox="0 0 600 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg class="box chart" :id="getData.id" viewBox="0 0 600 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="gradient">
                     <stop offset="0" stop-color="#f7f8f8" />
@@ -10,11 +10,11 @@
                 </linearGradient>
             </defs>
             <g transform="translate(0, 100) scale(1,-1)">
-                <path fill="none" class="ani" stroke="#50d99f" stroke-width="10" stroke-linejoin="round"
+                <path fill="none" class="ani" :stroke="getData.color" stroke-width="10" stroke-linejoin="round"
                     stroke-linecap="round" :d='getLine'></path>
 
             </g>
-            <g class="g" transform="translate(0, 100) scale(1,-1)">
+            <g :class="getData.id" transform="translate(0, 100) scale(1,-1)">
 
             </g>
 
@@ -32,9 +32,50 @@ import { onMounted, ref, computed, watch, onUpdated } from 'vue';
 const chartWidth = 600;
 
 
+//这样可以提供默认值，不填也可以。。
+const temp = ref({})
+const getData = computed(() => {
+    temp.value = {
+        id: props.options.id || null,
+        color: props.options.color || '#000',
+        title: props.options.title || ' ',
+        width: props.options.width || 300,
+        height: Math.floor(props.options.width / 3),
+        min_ranger: props.options.min_ranger || 0,
+        max_ranger: props.options.max_ranger || 100,
+        value: props.options.value || [0]
+    }
+    return temp.value
+})
+
+let breakPoint = ()=>{
+    return Math.floor(chartWidth / (getData.value.value.length - 1))
+    
+}
+
+
+const props = defineProps(
+    {
+        options: {
+            type: Object,
+        }
+    }
+)
+const getWidth = computed(() => {
+    // return props.options.width + 'px'
+    return temp.value.width + 'px'
+})
+const getHeight = computed(() => {
+    return temp.value.height + 'px'
+})
+
+
+
 
 const addEvent = () => {
-    let blockitem = document.querySelectorAll('.blockitem')
+    
+    let id = getData.value.id
+    let blockitem = document.querySelectorAll(`.${id}blockitem`)
 
     let nodePoint = document.querySelectorAll('.points')
     let chart = document.querySelector('.chart')
@@ -53,8 +94,8 @@ const addEvent = () => {
     //     })
     // })
     blockitem.forEach((el, i) => {
-        let item = document.querySelectorAll('.item')
-        let itemdata = document.querySelectorAll('.itemdata')
+        let item = document.querySelectorAll(`.${id}item`)
+        let itemdata = document.querySelectorAll(`.${id}itemdata`)
 
         el.addEventListener('mouseenter', (e) => {
             el.setAttribute('fill', '#00000030')
@@ -76,12 +117,14 @@ const addEvent = () => {
 }
 
 const createNode = () => {
+    
     let data = getData.value.value
+    let id = getData.value.id
     let breakPoint = Math.floor(chartWidth / (data.length - 1))
     data.forEach((item, i) => {
         let chart = document.querySelector('.chart')
         let svg = document.querySelector('svg')
-        let g = document.querySelector('.g')
+        let g = document.querySelector(`.${id}`)
         let value = 100 - item
         if (i === 0) {
             let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
@@ -92,27 +135,27 @@ const createNode = () => {
             // block.setAttribute('stroke','#000')
             // block.setAttribute('stroke-width','2')
             block.setAttribute('fill', 'transparent')
-            block.classList = 'blockitem'
+            block.classList = `${id}blockitem`
 
             let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             line.setAttribute('fill', 'none')
-            line.setAttribute('stroke', '#ccc')
+            line.setAttribute('stroke', '#50d99f')
             line.setAttribute('stroke-width', '1')
             line.setAttribute('stroke-linejoin', 'round')
             line.setAttribute('stroke-linecap', 'round')
             // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
             line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
-            line.classList = 'item'
+            line.classList = `${id}item`
             line.style.opacity = 0
-            
+
             let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
             t.setAttribute('text-anchor', 'middle')
-            t.setAttribute('x', (breakPoint * i + (breakPoint/2)).toString())
+            t.setAttribute('x', (breakPoint * i + (breakPoint / 2)).toString())
             // t.setAttribute('y', (100 - data[i] - 20).toString())
-            t.setAttribute('y', (data[i] - 20).toString())
+            t.setAttribute('y', (100-data[i]-20).toString())
             t.setAttribute('fill', '#000000')
             t.setAttribute('font-size', '32')
-            t.classList = 'itemdata'
+            t.classList = `${id}itemdata`
             t.innerHTML = data[i].toString()
             t.style.opacity = 0
             t.style.transformOrigin = 'center'
@@ -120,36 +163,36 @@ const createNode = () => {
             g.appendChild(t)
             g.appendChild(line)
             g.appendChild(block)
-        } else if(i === data.length - 1) {
+        } else if (i === data.length - 1) {
             let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            block.setAttribute('x', ((breakPoint * i) -(breakPoint)).toString())
+            block.setAttribute('x', ((breakPoint * i) - (breakPoint)).toString())
             block.setAttribute('y', '-50')
             block.setAttribute('width', breakPoint.toString())
             block.setAttribute('height', '200')
             // block.setAttribute('stroke','#000')
             // block.setAttribute('stroke-width','2')
             block.setAttribute('fill', 'transparent')
-            block.classList = 'blockitem'
+            block.classList = `${id}blockitem`
 
             let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             line.setAttribute('fill', 'none')
-            line.setAttribute('stroke', '#ccc')
+            line.setAttribute('stroke', '#50d99f')
             line.setAttribute('stroke-width', '1')
             line.setAttribute('stroke-linejoin', 'round')
             line.setAttribute('stroke-linecap', 'round')
             // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
             line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
-            line.classList = 'item'
+            line.classList = `${id}item`
             line.style.opacity = 0
-            
+
             let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
             t.setAttribute('text-anchor', 'middle')
-            t.setAttribute('x', (breakPoint * i - (breakPoint/2)).toString())
+            t.setAttribute('x', (breakPoint * i - (breakPoint / 2)).toString())
             // t.setAttribute('y', (100 - data[i] - 20).toString())
-            t.setAttribute('y', (data[i] - 20).toString())
+            t.setAttribute('y', (100-data[i]-20).toString())
             t.setAttribute('fill', '#000000')
             t.setAttribute('font-size', '32')
-            t.classList = 'itemdata'
+            t.classList = `${id}itemdata`
             t.innerHTML = data[i].toString()
             t.style.opacity = 0
             t.style.transformOrigin = 'center'
@@ -159,7 +202,7 @@ const createNode = () => {
             g.appendChild(block)
 
 
-        }else {
+        } else {
             //这是区块
             let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
             block.setAttribute('x', ((breakPoint * i) - Math.floor(breakPoint / 2)).toString())
@@ -169,7 +212,7 @@ const createNode = () => {
             // block.setAttribute('stroke','#000')
             // block.setAttribute('stroke-width','2')
             block.setAttribute('fill', 'transparent')
-            block.classList = 'blockitem'
+            block.classList = `${id}blockitem`
             //这是画标记点
             // let p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             // p.setAttribute('fill', 'none')
@@ -186,13 +229,13 @@ const createNode = () => {
             //这是画竖线
             let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             line.setAttribute('fill', 'none')
-            line.setAttribute('stroke', '#ccc')
+            line.setAttribute('stroke', '#50d99f')
             line.setAttribute('stroke-width', '1')
             line.setAttribute('stroke-linejoin', 'round')
             line.setAttribute('stroke-linecap', 'round')
             // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
             line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
-            line.classList = 'item'
+            line.classList = `${id}item`
             line.style.opacity = 0
 
             //这是画数据
@@ -200,10 +243,10 @@ const createNode = () => {
             t.setAttribute('text-anchor', 'middle')
             t.setAttribute('x', (breakPoint * i).toString())
             // t.setAttribute('y', (100 - data[i] - 20).toString())
-            t.setAttribute('y', (data[i] - 20).toString())
+            t.setAttribute('y', (100-data[i]-20).toString())
             t.setAttribute('fill', '#000000')
             t.setAttribute('font-size', '32')
-            t.classList = 'itemdata'
+            t.classList = `${id}itemdata`
             t.innerHTML = data[i].toString()
             t.style.opacity = 0
             t.style.transformOrigin = 'center'
@@ -221,48 +264,30 @@ const createNode = () => {
     })
 }
 
-watch(
-    props.options, (o, n) => {
-        let breakPoint = Math.floor(chartWidth / (props.options.value.length - 1))
-        let item = document.querySelectorAll('.item')
-        let itemdata = document.querySelectorAll('.itemdata')
+// watch(
+//     props.options, () => {
 
-        // let points = document.querySelectorAll('.points')
-        let blockitem = document.querySelectorAll('.blockitem')
+//         let breakPoint = Math.floor(chartWidth / (props.options.value.length - 1))
+//         let item = document.querySelectorAll('.item')
+//         let itemdata = document.querySelectorAll('.itemdata')
+//         let blockitem = document.querySelectorAll('.blockitem')
 
-        // points.forEach((el, i) => {
-        //     el.setAttribute('d', `M${breakPoint * i},${props.options.value[i]} ${breakPoint * (i)},${props.options.value[i]}`)
-        //     itemdata[i].setAttribute('y',(100 - props.options.value[i] - 20).toString())
-        //     itemdata[i].innerHTML = props.options.value[i].toString()
-        //     itemdata[i].style.opacity = 0
-        // })
+//         blockitem.forEach((el, i) => {
+//             el.setAttribute('d', `M${breakPoint * i},${props.options.value[i]} ${breakPoint * (i)},${props.options.value[i]}`)
+//             itemdata[i].setAttribute('y', (100 - props.options.value[i] - 20).toString())
+//             itemdata[i].innerHTML = props.options.value[i]
 
-        blockitem.forEach((el, i) => {
-            el.setAttribute('d', `M${breakPoint * i},${props.options.value[i]} ${breakPoint * (i)},${props.options.value[i]}`)
-            itemdata[i].setAttribute('y', (100 - props.options.value[i] - 20).toString())
-            itemdata[i].innerHTML = props.options.value[i]
-
-            item[i].setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${props.options.value[i]}`)
+//             item[i].setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${props.options.value[i]}`)
 
 
-        })
-        addEvent()
-    }
-)
+//         })
+//         addEvent()
+//     }
+// )
 
-//这样可以提供默认值，不填也可以。。
-const temp = ref({})
-const getData = computed(() => {
-    temp.value = {
-        title: props.options.title || ' ',
-        width: props.options.width || 300,
-        height: props.options.height || 60,
-        min_ranger: props.options.min_ranger || 0,
-        max_ranger: props.options.max_ranger || 100,
-        value: props.options.value || null
-    }
-    return temp.value
-})
+
+
+
 
 
 
@@ -282,27 +307,17 @@ const isdebugRef = (arr, arr2) => {
     }
 }
 
-const props = defineProps(
-    {
-        options: {
-            type: Object,
-        }
-    }
-)
-const getWidth = computed(() => {
-    // return props.options.width + 'px'
-    return temp.value.width + 'px'
-})
-const getHeight = computed(() => {
-    return props.options.height + 'px'
-})
+
 
 
 const line = ref('M0,0')
 
 const getLine = computed(() => {
+    if(getData.value === undefined){
+        return line.value = ('M0,0')
+    } 
     line.value = 'M'
-    let data = props.options.value
+    let data = getData.value.value
     let breakPoint = Math.floor(chartWidth / (data.length - 1))
     let middlePoint = (i) => {
         let res = (breakPoint * i) - (breakPoint / 2)
@@ -313,7 +328,7 @@ const getLine = computed(() => {
         return res
     }
 
-    for (let i = 0; i < props.options.value.length; i++) {
+    for (let i = 0; i < data.length; i++) {
         if (i === 0) {
             // line.value = line.value + ' ' + (breakPoint * i) + ',' + data[i] + ' '
             line.value = ` ${line.value} ${middlePoint(i)},${data[i]} `
@@ -329,21 +344,53 @@ const getLine = computed(() => {
 
 })
 
+
+
+
+
 onMounted(() => {
     createNode()
     addEvent()
-    let test = document.querySelector('.test')
+    console.log(props.options.value)
+    
 })
 onUpdated(() => {
-    let g = document.querySelector('.g')
-    g.innerHTML = ''
-    createNode()
-    addEvent()
+    let id = getData.value.id
+    let data =getData.value.value
+    let lineLength = getData.value.value.length
+    let blockitem = document.querySelectorAll(`.${id}blockitem`)
+    let blockLength = blockitem.length
+
+    let itemdata = document.querySelectorAll(`.${id}itemdata`)
+    let item = document.querySelectorAll(`.${id}item`)
+    
+
+    let g = document.querySelector(`.${id}`)
+    if (blockLength != lineLength) {
+        g.innerHTML = ''
+        createNode()
+        addEvent()
+    }else{
+        blockitem.forEach((el, i) => {
+            itemdata[i].setAttribute('y', (100 - data[i] - 20))
+            itemdata[i].innerHTML = data[i]
+            item[i].setAttribute('d', `M${breakPoint() * i},0 ${breakPoint() * (i)},${data[i]}`)
+        })
+        
+        addEvent()
+    }
 })
 
 
 
 </script>
+
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500&display=swap');
+</style>
+
+
 
 <style lang="less" scoped>
 // @mainWidth: v-bind(getWidth);
@@ -351,31 +398,23 @@ onUpdated(() => {
 @mainWidth: v-bind(getWidth);
 @mainHeight: v-bind(getHeight);
 
-.inlineBlock {
-    // margin-left: 10px;
-    // margin-right: 10px;
 
+.inlineBlock {
+    margin-left: 0px;
+    margin-right: 0px;
     width: @mainWidth;
     height: @mainHeight;
-
-
-    // border: 1px dotted #ccc;
-
-    // box-shadow:1px 2px 5px 2px #ccc;
-    // margin-bottom: 10px;
+    font-family: 'Oswald', sans-serif;
 
 }
 
 .box {
-
     width: @mainWidth;
     height: @mainHeight;
     // vertical-align: middle;
     position: relative;
     background-color: #ffffff00;
-
     // margin-bottom: 10px;
-
 }
 
 .chartItem {
@@ -386,11 +425,6 @@ onUpdated(() => {
 .chartBoxContainer {
     width: @mainWidth;
     height: @mainHeight;
-
-
-
-
-
 }
 
 .base {
@@ -399,11 +433,8 @@ onUpdated(() => {
 }
 
 .chartbox {
-
     background-color: rgba(236, 236, 236, 0);
     transition: .3s ease-in-out;
-
-
 }
 
 .ani {
@@ -411,7 +442,6 @@ onUpdated(() => {
 }
 
 .item {
-
     transition: 1s all ease-in-out;
     caret-color: transparent
 }
