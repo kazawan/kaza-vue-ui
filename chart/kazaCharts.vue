@@ -1,5 +1,5 @@
 <template>
-    <div class="box inlineBlock">
+    <div class=" inlineBlock">
         <svg class="box chart" viewBox="0 0 600 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="gradient">
@@ -9,9 +9,12 @@
                     <stop offset="100%" stop-color="#d9f2f6" />
                 </linearGradient>
             </defs>
-            <g class="g" transform="translate(0, 100) scale(1,-1)">
+            <g transform="translate(0, 100) scale(1,-1)">
                 <path fill="none" class="ani" stroke="#50d99f" stroke-width="10" stroke-linejoin="round"
                     stroke-linecap="round" :d='getLine'></path>
+
+            </g>
+            <g class="g" transform="translate(0, 100) scale(1,-1)">
 
             </g>
 
@@ -23,18 +26,16 @@
 
 <script setup>
 //todo 添加padding 
-import { onMounted, ref, computed, watch, watchEffect } from 'vue';
+import { onMounted, ref, computed, watch, onUpdated } from 'vue';
 
 
-onMounted(() => {
-    createNode()
-    addEvent()
-    let test = document.querySelector('.test')
-})
+const chartWidth = 600;
 
-const addEvent = ()=>{
+
+
+const addEvent = () => {
     let blockitem = document.querySelectorAll('.blockitem')
-    
+
     let nodePoint = document.querySelectorAll('.points')
     let chart = document.querySelector('.chart')
     // nodePoint.forEach((el, i) => {
@@ -56,22 +57,22 @@ const addEvent = ()=>{
         let itemdata = document.querySelectorAll('.itemdata')
 
         el.addEventListener('mouseenter', (e) => {
-            el.setAttribute('fill','#00000030')
+            el.setAttribute('fill', '#00000030')
             el.style.opacity = .3
             item[i].style.opacity = 1
             itemdata[i].style.opacity = 1
-            
+
         })
         el.addEventListener('mouseleave', (e) => {
-            el.setAttribute('fill','#cccccc00')
+            el.setAttribute('fill', '#cccccc00')
             el.style.opacity = 0
             item[i].style.opacity = 0
             itemdata[i].style.opacity = 0
-            
+
         })
     })
 
-    
+
 }
 
 const createNode = () => {
@@ -82,82 +83,168 @@ const createNode = () => {
         let svg = document.querySelector('svg')
         let g = document.querySelector('.g')
         let value = 100 - item
-        //这是区块
-        let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        block.setAttribute('x',((breakPoint * i ) - Math.floor(breakPoint/2)).toString())
-        block.setAttribute('y','-50')
-        block.setAttribute('width',breakPoint.toString())
-        block.setAttribute('height','200')
-        // block.setAttribute('stroke','#000')
-        // block.setAttribute('stroke-width','2')
-        block.setAttribute('fill','transparent')
-        block.classList = 'blockitem'
-        
-        
-        
-        //这是画标记点
-        // let p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        // p.setAttribute('fill', 'none')
-        // p.setAttribute('stroke', '#fff')
-        // p.setAttribute('stroke-width', '10')
-        // p.setAttribute('stroke-linejoin', 'round')
-        // p.setAttribute('stroke-linecap', 'round')
-        // p.setAttribute('d', `M${breakPoint * i},${item} ${breakPoint * (i)},${item}`)
-        // p.classList = 'points'
+        if (i === 0) {
+            let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            block.setAttribute('x', ((breakPoint * i)).toString())
+            block.setAttribute('y', '-50')
+            block.setAttribute('width', breakPoint.toString())
+            block.setAttribute('height', '200')
+            // block.setAttribute('stroke','#000')
+            // block.setAttribute('stroke-width','2')
+            block.setAttribute('fill', 'transparent')
+            block.classList = 'blockitem'
 
-        // g.appendChild(p)
-        //这是画竖线
-        let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        line.setAttribute('fill', 'none')
-        line.setAttribute('stroke', '#ccc')
-        line.setAttribute('stroke-width', '1')
-        line.setAttribute('stroke-linejoin', 'round')
-        line.setAttribute('stroke-linecap', 'round')
-        // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
-        line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
-        line.classList = 'item'
-        line.style.opacity = 0
-        g.appendChild(line)
-        //这是画数据
-        let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-        t.setAttribute('text-anchor', 'middle')
-        t.setAttribute('x', (breakPoint * i).toString())
-        t.setAttribute('y', (100 - data[i] - 20).toString())
-        t.setAttribute('fill', '#000000')
-        t.setAttribute('font-size', '32')
-        t.classList = 'itemdata'
-        t.innerHTML = data[i].toString()
-        t.style.opacity = 0
-        chart.append(t)
-        g.appendChild(block)
+            let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            line.setAttribute('fill', 'none')
+            line.setAttribute('stroke', '#ccc')
+            line.setAttribute('stroke-width', '1')
+            line.setAttribute('stroke-linejoin', 'round')
+            line.setAttribute('stroke-linecap', 'round')
+            // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
+            line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
+            line.classList = 'item'
+            line.style.opacity = 0
+            
+            let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+            t.setAttribute('text-anchor', 'middle')
+            t.setAttribute('x', (breakPoint * i + (breakPoint/2)).toString())
+            // t.setAttribute('y', (100 - data[i] - 20).toString())
+            t.setAttribute('y', (data[i] - 20).toString())
+            t.setAttribute('fill', '#000000')
+            t.setAttribute('font-size', '32')
+            t.classList = 'itemdata'
+            t.innerHTML = data[i].toString()
+            t.style.opacity = 0
+            t.style.transformOrigin = 'center'
+            t.style.transform = 'rotateX(180deg)'
+            g.appendChild(t)
+            g.appendChild(line)
+            g.appendChild(block)
+        } else if(i === data.length - 1) {
+            let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            block.setAttribute('x', ((breakPoint * i) -(breakPoint)).toString())
+            block.setAttribute('y', '-50')
+            block.setAttribute('width', breakPoint.toString())
+            block.setAttribute('height', '200')
+            // block.setAttribute('stroke','#000')
+            // block.setAttribute('stroke-width','2')
+            block.setAttribute('fill', 'transparent')
+            block.classList = 'blockitem'
+
+            let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            line.setAttribute('fill', 'none')
+            line.setAttribute('stroke', '#ccc')
+            line.setAttribute('stroke-width', '1')
+            line.setAttribute('stroke-linejoin', 'round')
+            line.setAttribute('stroke-linecap', 'round')
+            // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
+            line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
+            line.classList = 'item'
+            line.style.opacity = 0
+            
+            let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+            t.setAttribute('text-anchor', 'middle')
+            t.setAttribute('x', (breakPoint * i - (breakPoint/2)).toString())
+            // t.setAttribute('y', (100 - data[i] - 20).toString())
+            t.setAttribute('y', (data[i] - 20).toString())
+            t.setAttribute('fill', '#000000')
+            t.setAttribute('font-size', '32')
+            t.classList = 'itemdata'
+            t.innerHTML = data[i].toString()
+            t.style.opacity = 0
+            t.style.transformOrigin = 'center'
+            t.style.transform = 'rotateX(180deg)'
+            g.appendChild(t)
+            g.appendChild(line)
+            g.appendChild(block)
+
+
+        }else {
+            //这是区块
+            let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            block.setAttribute('x', ((breakPoint * i) - Math.floor(breakPoint / 2)).toString())
+            block.setAttribute('y', '-50')
+            block.setAttribute('width', breakPoint.toString())
+            block.setAttribute('height', '200')
+            // block.setAttribute('stroke','#000')
+            // block.setAttribute('stroke-width','2')
+            block.setAttribute('fill', 'transparent')
+            block.classList = 'blockitem'
+            //这是画标记点
+            // let p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            // p.setAttribute('fill', 'none')
+            // p.setAttribute('stroke', '#fff')
+            // p.setAttribute('stroke-width', '10')
+            // p.setAttribute('stroke-linejoin', 'round')
+            // p.setAttribute('stroke-linecap', 'round')
+            // p.setAttribute('d', `M${breakPoint * i},${item} ${breakPoint * (i)},${item}`)
+            // p.classList = 'points'
+
+            // g.appendChild(p)
+
+
+            //这是画竖线
+            let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            line.setAttribute('fill', 'none')
+            line.setAttribute('stroke', '#ccc')
+            line.setAttribute('stroke-width', '1')
+            line.setAttribute('stroke-linejoin', 'round')
+            line.setAttribute('stroke-linecap', 'round')
+            // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
+            line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
+            line.classList = 'item'
+            line.style.opacity = 0
+
+            //这是画数据
+            let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+            t.setAttribute('text-anchor', 'middle')
+            t.setAttribute('x', (breakPoint * i).toString())
+            // t.setAttribute('y', (100 - data[i] - 20).toString())
+            t.setAttribute('y', (data[i] - 20).toString())
+            t.setAttribute('fill', '#000000')
+            t.setAttribute('font-size', '32')
+            t.classList = 'itemdata'
+            t.innerHTML = data[i].toString()
+            t.style.opacity = 0
+            t.style.transformOrigin = 'center'
+            t.style.transform = 'rotateX(180deg)'
+            g.append(t)
+            g.appendChild(line)
+            g.appendChild(block)
+        }
+
+
+
+
+
 
     })
 }
 
 watch(
-    props.options,(o,n)=>{
+    props.options, (o, n) => {
         let breakPoint = Math.floor(chartWidth / (props.options.value.length - 1))
         let item = document.querySelectorAll('.item')
         let itemdata = document.querySelectorAll('.itemdata')
 
         // let points = document.querySelectorAll('.points')
         let blockitem = document.querySelectorAll('.blockitem')
-        
+
         // points.forEach((el, i) => {
         //     el.setAttribute('d', `M${breakPoint * i},${props.options.value[i]} ${breakPoint * (i)},${props.options.value[i]}`)
         //     itemdata[i].setAttribute('y',(100 - props.options.value[i] - 20).toString())
         //     itemdata[i].innerHTML = props.options.value[i].toString()
         //     itemdata[i].style.opacity = 0
         // })
-        
+
         blockitem.forEach((el, i) => {
             el.setAttribute('d', `M${breakPoint * i},${props.options.value[i]} ${breakPoint * (i)},${props.options.value[i]}`)
-            itemdata[i].setAttribute('y',(100 - props.options.value[i] - 20).toString())
+            itemdata[i].setAttribute('y', (100 - props.options.value[i] - 20).toString())
             itemdata[i].innerHTML = props.options.value[i]
-            
+
             item[i].setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${props.options.value[i]}`)
-            
-            
+
+
         })
         addEvent()
     }
@@ -179,7 +266,7 @@ const getData = computed(() => {
 
 
 
-const chartWidth = 600;
+
 let debug = !true
 const isdebug = () => {
     if (debug) {
@@ -194,17 +281,7 @@ const isdebugRef = (arr, arr2) => {
         });
     }
 }
-const lastValue = ref(0)
-const lastValueY = ref(0)
-const getLastValue = computed(() => {
-    return lastValue.value
 
-})
-
-const getLastValueY = computed(() => {
-    return 100 - lastValueY.value
-
-})
 const props = defineProps(
     {
         options: {
@@ -252,6 +329,18 @@ const getLine = computed(() => {
 
 })
 
+onMounted(() => {
+    createNode()
+    addEvent()
+    let test = document.querySelector('.test')
+})
+onUpdated(() => {
+    let g = document.querySelector('.g')
+    g.innerHTML = ''
+    createNode()
+    addEvent()
+})
+
 
 
 </script>
@@ -265,11 +354,16 @@ const getLine = computed(() => {
 .inlineBlock {
     // margin-left: 10px;
     // margin-right: 10px;
-    border: 1px dotted #ccc;
-    overflow: hidden;
-    box-shadow:1px 2px 5px 2px #ccc;
-    filter: blur(.5px);
-    
+
+    width: @mainWidth;
+    height: @mainHeight;
+
+
+    // border: 1px dotted #ccc;
+
+    // box-shadow:1px 2px 5px 2px #ccc;
+    // margin-bottom: 10px;
+
 }
 
 .box {
@@ -279,8 +373,8 @@ const getLine = computed(() => {
     // vertical-align: middle;
     position: relative;
     background-color: #ffffff00;
-    border-radius: 10px;
-    margin-bottom: 10px;
+
+    // margin-bottom: 10px;
 
 }
 
@@ -317,12 +411,13 @@ const getLine = computed(() => {
 }
 
 .item {
-    
+
     transition: 1s all ease-in-out;
     caret-color: transparent
 }
 
 .itemdata {
     &:extend(.item);
+    caret-color: transparent;
 }
 </style>
