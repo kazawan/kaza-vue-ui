@@ -9,18 +9,23 @@
                     <stop offset="100%" stop-color="#d9f2f6" />
                 </linearGradient>
             </defs>
-            <g transform="translate(0, 100) scale(1,-1)">
-                <path fill="none" class="ani" :stroke="getData.color" stroke-width="10" stroke-linejoin="round"
-                    stroke-linecap="round" :d='getLine'></path>
+            <g v-show='getData.id' transform="translate(0, 100) scale(1,-1)">
+                <path fill="none" :stroke="getData.color" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"
+                    :d='getLine'></path>
 
             </g>
-            <g :class="getData.id" transform="translate(0, 100) scale(1,-1)">
+            <g :class="getData.id" transform="translate(0, 100) scale(1,-1)" class="ani">
 
             </g>
-            <g v-show="getData.isEmty" transform="translate(0, 100) scale(1,-1)">
+            <g v-show="getData.isEmty" class="ani" transform="translate(0, 100) scale(1,-1)">
                 <text text-anchor="middle" x="300" y="50" fill="#000000" font-size="32" class="cpuitemdata"
                     style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">No
                     Data</text>
+            </g>
+            <g v-show="!getData.id && !getData.isEmty" class="ani" transform="translate(0, 100) scale(1,-1)">
+                <text text-anchor="middle" x="300" y="50" fill="#000000" font-size="32" class="cpuitemdata"
+                    style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">No id
+                    Inputed</text>
             </g>
 
         </svg>
@@ -46,22 +51,29 @@ function normalize(num, min, max) {
     }
 }
 
-function getMaxMin(arr){
-    let temp =[]
-    arr.forEach(item=>{
+function getMaxMin(arr) {
+
+    if (arr.length === 1) {
+        return {
+            max: arr[0],
+            min: arr[0] === 0 ? -10 : 0
+        }
+    }
+    let temp = []
+    arr.forEach(item => {
         temp.push(item)
     })
     let max;
     let min;
-    temp.sort(function(a,b){
-        return a-b
+    temp.sort(function (a, b) {
+        return a - b
     })
     min = temp[0]
-    max = temp[temp.length-1]
-    
+    max = temp[temp.length - 1]
+
     return {
-        max:max,
-        min:min
+        max: max,
+        min: min
     }
 }
 
@@ -82,11 +94,11 @@ const getData = computed(() => {
         fontColor: props.options.fontColor || '#000',
         min_ranger: props.options.auto_normalize === true ? getMaxMin(props.options.value).min : props.options.min_ranger ? props.options.min_ranger : 0,
         max_ranger: props.options.auto_normalize === true ? getMaxMin(props.options.value).max : props.options.max_ranger ? props.options.max_ranger : 100,
-        
-        
     }
     return temp.value
 })
+
+
 
 let breakPoint = () => {
     return Math.floor(chartWidth / (getData.value.value.length - 1)) === Infinity ? 600 : Math.floor(chartWidth / (getData.value.value.length - 1))
@@ -112,7 +124,9 @@ const getHeight = computed(() => {
 
 
 const addEvent = () => {
-
+    if (getData.value.id === null) {
+        return
+    }
     let id = getData.value.id
     let blockitem = document.querySelectorAll(`.${id}blockitem`)
 
@@ -137,143 +151,134 @@ const addEvent = () => {
 
 }
 
-const createNode = () => {
+const createblockitem = (x, w, eltomount) => {
+    let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    block.setAttribute('x', x)
+    block.setAttribute('y', '-50')
+    block.setAttribute('width', w)
+    block.setAttribute('height', '200')
+    block.setAttribute('fill', 'transparent')
+    block.classList = `${getData.value.id}blockitem`
+    eltomount.appendChild(block)
+}
 
+const createline = (bp, i, normalizeData, eltomount) => {
+    let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    line.setAttribute('fill', 'none')
+    line.setAttribute('stroke', '#50d99f')
+    line.setAttribute('stroke-width', '1')
+    line.setAttribute('stroke-linejoin', 'round')
+    line.setAttribute('stroke-linecap', 'round')
+    // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
+    line.setAttribute('d', `M${bp * i},0 ${bp * i},${normalizeData}`)
+    line.classList = `${getData.value.id}item`
+    line.style.opacity = 0
+    eltomount.appendChild(line)
+}
+
+const creattext = (x, normalizeData, data, eltomount) => {
+    let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+    t.setAttribute('text-anchor', 'middle')
+    t.setAttribute('x', x)
+    t.setAttribute('y', (100 - normalizeData - 20).toString()) //
+    t.setAttribute('fill', getData.value.fontColor.toString())
+    t.setAttribute('font-size', '32')
+    t.classList = `${getData.value.id}itemdata`
+    t.innerHTML = data.toString()
+    t.style.opacity = 0
+    t.style.transformOrigin = 'center'
+    t.style.transform = 'rotateX(180deg)'
+    eltomount.appendChild(t)
+}
+
+
+
+const createNode = () => {
+    if (getData.value.id === null) {
+        return
+    }
     let data = getData.value.value
     //获取正常化数据坐标
-    let normalizeData  = []
+    let normalizeData = []
     let min = getData.value.min_ranger
     let max = getData.value.max_ranger
-    getData.value.value.forEach((item) => {  
-        normalizeData.push(normalize(item,min,max))
+
+    getData.value.value.forEach((item) => {
+        normalizeData.push(normalize(item, min, max))
     })
+
     let fontColor = getData.value.fontColor
     isdebugRef(['data'], [data.length])
     let id = getData.value.id
     let breakPoint = Math.floor(chartWidth / (data.length - 1)) === Infinity ? 600 : Math.floor(chartWidth / (data.length - 1))
+
+    let g = document.querySelector(`.${id}`)
     if (data.length != 0) {
         temp.value.isEmty = false
-        data.forEach((item, i) => {
-            let g = document.querySelector(`.${id}`)
-            if (i === 0) {
-                let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                block.setAttribute('x', ((breakPoint * i)).toString())
-                block.setAttribute('y', '-50')
-                block.setAttribute('width', breakPoint.toString())
-                block.setAttribute('height', '200')
-                // block.setAttribute('stroke','#000')
-                // block.setAttribute('stroke-width','2')
-                block.setAttribute('fill', 'transparent')
-                block.classList = `${id}blockitem`
+        if (data.length === 1) {
+            creattext('300', normalizeData[0], data[0], g)
+            createline(300, 1, normalizeData[0], g)
+            createblockitem('0', '600', g)
+        } else {
+            data.forEach((item, i) => {
+                if (i === 0) {
+                    creattext((breakPoint * i + (breakPoint / 2)).toString(), normalizeData[i], data[i], g)
+                    createline(breakPoint, i, normalizeData[i], g)
+                    createblockitem(((breakPoint * i)).toString(), breakPoint.toString(), g)
 
-                let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                line.setAttribute('fill', 'none')
-                line.setAttribute('stroke', '#50d99f')
-                line.setAttribute('stroke-width', '1')
-                line.setAttribute('stroke-linejoin', 'round')
-                line.setAttribute('stroke-linecap', 'round')
-                // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
-                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${normalizeData[i]}`)
-                line.classList = `${id}item`
-                line.style.opacity = 0
+                } else if (i === data.length - 1) {
+                    creattext((breakPoint * i - (breakPoint / 2)).toString(), normalizeData[i], data[i], g)
+                    createline(breakPoint, i, normalizeData[i], g)
+                    createblockitem(((breakPoint * i) - (breakPoint)).toString(), breakPoint.toString(), g)
 
-                let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-                t.setAttribute('text-anchor', 'middle')
-                t.setAttribute('x', (breakPoint * i + (breakPoint / 2)).toString())
-                // t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('y', (100 - normalizeData[i] - 20).toString())
-                t.setAttribute('fill', fontColor.toString())
-                t.setAttribute('font-size', '32')
-                t.classList = `${id}itemdata`
-                t.innerHTML = data[i].toString()
-                t.style.opacity = 0
-                t.style.transformOrigin = 'center'
-                t.style.transform = 'rotateX(180deg)'
-                g.appendChild(t)
-                g.appendChild(line)
-                g.appendChild(block)
-            } else if (i === data.length - 1) {
-                let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                block.setAttribute('x', ((breakPoint * i) - (breakPoint)).toString())
-                block.setAttribute('y', '-50')
-                block.setAttribute('width', breakPoint.toString())
-                block.setAttribute('height', '200')
-                // block.setAttribute('stroke','#000')
-                // block.setAttribute('stroke-width','2')
-                block.setAttribute('fill', 'transparent')
-                block.classList = `${id}blockitem`
-
-                let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                line.setAttribute('fill', 'none')
-                line.setAttribute('stroke', '#50d99f')
-                line.setAttribute('stroke-width', '1')
-                line.setAttribute('stroke-linejoin', 'round')
-                line.setAttribute('stroke-linecap', 'round')
-                // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
-                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${normalizeData[i]}`)
-                line.classList = `${id}item`
-                line.style.opacity = 0
-
-                let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-                t.setAttribute('text-anchor', 'middle')
-                t.setAttribute('x', (breakPoint * i - (breakPoint / 2)).toString())
-                // t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('y', (100 - normalizeData[i] - 20).toString())
-                t.setAttribute('fill', fontColor.toString())
-                t.setAttribute('font-size', '32')
-                t.classList = `${id}itemdata`
-                t.innerHTML = data[i].toString()
-                t.style.opacity = 0
-                t.style.transformOrigin = 'center'
-                t.style.transform = 'rotateX(180deg)'
-                g.appendChild(t)
-                g.appendChild(line)
-                g.appendChild(block)
+                } else {
+                    //这是区块
+                    // let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    // block.setAttribute('x', ((breakPoint * i) - Math.floor(breakPoint / 2)).toString())
+                    // block.setAttribute('y', '-50')
+                    // block.setAttribute('width', breakPoint.toString())
+                    // block.setAttribute('height', '200')
+                    // // block.setAttribute('stroke','#000')
+                    // // block.setAttribute('stroke-width','2')
+                    // block.setAttribute('fill', 'transparent')
+                    // block.classList = `${id}blockitem`
 
 
-            } else {
-                //这是区块
-                let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                block.setAttribute('x', ((breakPoint * i) - Math.floor(breakPoint / 2)).toString())
-                block.setAttribute('y', '-50')
-                block.setAttribute('width', breakPoint.toString())
-                block.setAttribute('height', '200')
-                // block.setAttribute('stroke','#000')
-                // block.setAttribute('stroke-width','2')
-                block.setAttribute('fill', 'transparent')
-                block.classList = `${id}blockitem`
+                    //这是画竖线
+                    // let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    // line.setAttribute('fill', 'none')
+                    // line.setAttribute('stroke', '#50d99f')
+                    // line.setAttribute('stroke-width', '1')
+                    // line.setAttribute('stroke-linejoin', 'round')
+                    // line.setAttribute('stroke-linecap', 'round')
+                    // // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
+                    // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${normalizeData[i]}`)
+                    // line.classList = `${id}item`
+                    // line.style.opacity = 0
 
+                    //这是画数据
+                    // let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+                    // t.setAttribute('text-anchor', 'middle')
+                    // t.setAttribute('x', (breakPoint * i).toString())
+                    // // t.setAttribute('y', (100 - data[i] - 20).toString())
+                    // t.setAttribute('y', (100 - normalizeData[i] - 20).toString())
+                    // t.setAttribute('fill', fontColor.toString())
+                    // t.setAttribute('font-size', '32')
+                    // t.classList = `${id}itemdata`
+                    // t.innerHTML = data[i].toString()
+                    // t.style.opacity = 0
+                    // t.style.transformOrigin = 'center'
+                    // t.style.transform = 'rotateX(180deg)'
+                    // g.append(t)
+                    // g.appendChild(line)
+                    // g.appendChild(block)
+                    creattext((breakPoint * i).toString(), normalizeData[i], data[i], g)
+                    createline(breakPoint, i, normalizeData[i], g)
+                    createblockitem(((breakPoint * i) - Math.floor(breakPoint / 2)).toString(), breakPoint.toString(), g)
+                }
+            })
+        }
 
-                //这是画竖线
-                let line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                line.setAttribute('fill', 'none')
-                line.setAttribute('stroke', '#50d99f')
-                line.setAttribute('stroke-width', '1')
-                line.setAttribute('stroke-linejoin', 'round')
-                line.setAttribute('stroke-linecap', 'round')
-                // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
-                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${normalizeData[i]}`)
-                line.classList = `${id}item`
-                line.style.opacity = 0
-
-                //这是画数据
-                let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
-                t.setAttribute('text-anchor', 'middle')
-                t.setAttribute('x', (breakPoint * i).toString())
-                // t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('y', (100 - normalizeData[i] - 20).toString())
-                t.setAttribute('fill', fontColor.toString())
-                t.setAttribute('font-size', '32')
-                t.classList = `${id}itemdata`
-                t.innerHTML = data[i].toString()
-                t.style.opacity = 0
-                t.style.transformOrigin = 'center'
-                t.style.transform = 'rotateX(180deg)'
-                g.append(t)
-                g.appendChild(line)
-                g.appendChild(block)
-            }
-        })
     } else {
         temp.value.isEmty = true
     }
@@ -310,10 +315,12 @@ const getLine = computed(() => {
     let data = [];
     let min = getData.value.min_ranger
     let max = getData.value.max_ranger
+
     getData.value.value.forEach((item) => {
-        data.push(Math.floor(normalize(item,min,max)))
+        data.push(Math.floor(normalize(item, min, max)))
     })
-    
+
+
 
     let breakPoint = Math.floor(chartWidth / (data.length - 1)) === Infinity ? 600 : Math.floor(chartWidth / (data.length - 1))
 
@@ -346,6 +353,8 @@ const getLine = computed(() => {
 
     if (data.length === 0) {
         return line.value = 'M0,0'
+    } else if (data.length === 1) {
+        return line.value = `M0,${data[0]} 600,${data[0]}`
     } else {
         return line.value
     }
@@ -363,13 +372,17 @@ const getLine = computed(() => {
 onMounted(() => {
     createNode()
     addEvent()
-    
-    
+
+
 
     // console.log(props.options.value)
 
 })
 onUpdated(() => {
+    if (getData.value.id === null) {
+        console.log('no id')
+        return
+    }
     let id = getData.value.id
     let data = getData.value.value
     let lineLength = getData.value.value.length
@@ -395,7 +408,7 @@ onUpdated(() => {
         addEvent()
     }
 
-    
+
 })
 
 
@@ -455,7 +468,7 @@ onUpdated(() => {
 }
 
 .ani {
-    transition: .5s all ease;
+    transition: .5s all ease-in-out;
 }
 
 
@@ -469,6 +482,4 @@ onUpdated(() => {
     &:extend(.item);
     caret-color: transparent;
 }
-
-
 </style>
