@@ -378,7 +378,6 @@ const getLine = computed(() => {
 onMounted(() => {
     createNode()
     addEvent()
-    // console.log(props.options.value)
 })
 onUpdated(() => {
     if (getData.value.id === null) {
