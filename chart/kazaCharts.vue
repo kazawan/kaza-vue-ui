@@ -18,7 +18,9 @@
 
             </g>
             <g v-show="getData.isEmty" transform="translate(0, 100) scale(1,-1)">
-                <text text-anchor="middle" x="300" y="50" fill="#000000" font-size="32" class="cpuitemdata" style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">No Data</text>
+                <text text-anchor="middle" x="300" y="50" fill="#000000" font-size="32" class="cpuitemdata"
+                    style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">No
+                    Data</text>
             </g>
 
         </svg>
@@ -28,9 +30,40 @@
 
 
 <script setup>
-//todo 添加padding 
+//TODO 添加字体大小 颜色 
 import { onMounted, ref, computed, watch, onUpdated } from 'vue';
 
+
+function normalize(num, min, max) {
+    // console.log(typeof num)
+    if (num < 0) {
+        return (Math.abs(Math.abs(num) + min)) / (max - min) * 100
+    } else if (num == 0) {
+        return (num - min) / (max - min) * 100
+
+    } else {
+        return (num - min) / (max - min) * 100
+    }
+}
+
+function getMaxMin(arr){
+    let temp =[]
+    arr.forEach(item=>{
+        temp.push(item)
+    })
+    let max;
+    let min;
+    temp.sort(function(a,b){
+        return a-b
+    })
+    min = temp[0]
+    max = temp[temp.length-1]
+    
+    return {
+        max:max,
+        min:min
+    }
+}
 
 const chartWidth = 600;
 
@@ -41,13 +74,15 @@ const getData = computed(() => {
     temp.value = {
         id: props.options.id || null,
         color: props.options.color || '#000',
-        title: props.options.title || ' ',
         width: props.options.width || 300,
         height: Math.floor(props.options.width / 3),
-        min_ranger: props.options.min_ranger || 0,
-        max_ranger: props.options.max_ranger || 100,
+        autoNormalize: props.options.auto_normalize === true ? true : false,
         value: props.options.value || [],
-        isEmty: props.options.value.length === 0 ? true : false
+        isEmty: props.options.value.length === 0 ? true : false,
+        fontColor: props.options.fontColor || '#000',
+        min_ranger: props.options.auto_normalize === true ? getMaxMin(props.options.value).min : props.options.min_ranger ? props.options.min_ranger : 0,
+        max_ranger: props.options.auto_normalize === true ? getMaxMin(props.options.value).max : props.options.max_ranger ? props.options.max_ranger : 100,
+        
         
     }
     return temp.value
@@ -81,32 +116,14 @@ const addEvent = () => {
     let id = getData.value.id
     let blockitem = document.querySelectorAll(`.${id}blockitem`)
 
-    let nodePoint = document.querySelectorAll('.points')
-    let chart = document.querySelector('.chart')
-    // nodePoint.forEach((el, i) => {
-    //     let item = document.querySelectorAll('.item')
-    //     let itemdata = document.querySelectorAll('.itemdata')
-
-    //     el.addEventListener('mouseover', (e) => {
-
-    //         item[i].style.opacity = 1
-    //         itemdata[i].style.opacity = 1
-    //     })
-    //     el.addEventListener('mouseout', (e) => {
-    //         item[i].style.opacity = 0
-    //         itemdata[i].style.opacity = 0
-    //     })
-    // })
     blockitem.forEach((el, i) => {
         let item = document.querySelectorAll(`.${id}item`)
         let itemdata = document.querySelectorAll(`.${id}itemdata`)
-
         el.addEventListener('mouseenter', (e) => {
             el.setAttribute('fill', '#00000030')
             el.style.opacity = .3
             item[i].style.opacity = 1
             itemdata[i].style.opacity = 1
-
         })
         el.addEventListener('mouseleave', (e) => {
             el.setAttribute('fill', '#cccccc00')
@@ -123,16 +140,21 @@ const addEvent = () => {
 const createNode = () => {
 
     let data = getData.value.value
+    //获取正常化数据坐标
+    let normalizeData  = []
+    let min = getData.value.min_ranger
+    let max = getData.value.max_ranger
+    getData.value.value.forEach((item) => {  
+        normalizeData.push(normalize(item,min,max))
+    })
+    let fontColor = getData.value.fontColor
     isdebugRef(['data'], [data.length])
     let id = getData.value.id
     let breakPoint = Math.floor(chartWidth / (data.length - 1)) === Infinity ? 600 : Math.floor(chartWidth / (data.length - 1))
     if (data.length != 0) {
         temp.value.isEmty = false
         data.forEach((item, i) => {
-            let chart = document.querySelector('.chart')
-            let svg = document.querySelector('svg')
             let g = document.querySelector(`.${id}`)
-            let value = 100 - item
             if (i === 0) {
                 let block = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 block.setAttribute('x', ((breakPoint * i)).toString())
@@ -151,7 +173,7 @@ const createNode = () => {
                 line.setAttribute('stroke-linejoin', 'round')
                 line.setAttribute('stroke-linecap', 'round')
                 // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
-                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
+                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${normalizeData[i]}`)
                 line.classList = `${id}item`
                 line.style.opacity = 0
 
@@ -159,8 +181,8 @@ const createNode = () => {
                 t.setAttribute('text-anchor', 'middle')
                 t.setAttribute('x', (breakPoint * i + (breakPoint / 2)).toString())
                 // t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('fill', '#000000')
+                t.setAttribute('y', (100 - normalizeData[i] - 20).toString())
+                t.setAttribute('fill', fontColor.toString())
                 t.setAttribute('font-size', '32')
                 t.classList = `${id}itemdata`
                 t.innerHTML = data[i].toString()
@@ -188,7 +210,7 @@ const createNode = () => {
                 line.setAttribute('stroke-linejoin', 'round')
                 line.setAttribute('stroke-linecap', 'round')
                 // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
-                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
+                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${normalizeData[i]}`)
                 line.classList = `${id}item`
                 line.style.opacity = 0
 
@@ -196,8 +218,8 @@ const createNode = () => {
                 t.setAttribute('text-anchor', 'middle')
                 t.setAttribute('x', (breakPoint * i - (breakPoint / 2)).toString())
                 // t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('fill', '#000000')
+                t.setAttribute('y', (100 - normalizeData[i] - 20).toString())
+                t.setAttribute('fill', fontColor.toString())
                 t.setAttribute('font-size', '32')
                 t.classList = `${id}itemdata`
                 t.innerHTML = data[i].toString()
@@ -220,17 +242,6 @@ const createNode = () => {
                 // block.setAttribute('stroke-width','2')
                 block.setAttribute('fill', 'transparent')
                 block.classList = `${id}blockitem`
-                //这是画标记点
-                // let p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                // p.setAttribute('fill', 'none')
-                // p.setAttribute('stroke', '#fff')
-                // p.setAttribute('stroke-width', '10')
-                // p.setAttribute('stroke-linejoin', 'round')
-                // p.setAttribute('stroke-linecap', 'round')
-                // p.setAttribute('d', `M${breakPoint * i},${item} ${breakPoint * (i)},${item}`)
-                // p.classList = 'points'
-
-                // g.appendChild(p)
 
 
                 //这是画竖线
@@ -241,7 +252,7 @@ const createNode = () => {
                 line.setAttribute('stroke-linejoin', 'round')
                 line.setAttribute('stroke-linecap', 'round')
                 // line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},100`)
-                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${data[i]}`)
+                line.setAttribute('d', `M${breakPoint * i},0 ${breakPoint * (i)},${normalizeData[i]}`)
                 line.classList = `${id}item`
                 line.style.opacity = 0
 
@@ -250,8 +261,8 @@ const createNode = () => {
                 t.setAttribute('text-anchor', 'middle')
                 t.setAttribute('x', (breakPoint * i).toString())
                 // t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('y', (100 - data[i] - 20).toString())
-                t.setAttribute('fill', '#000000')
+                t.setAttribute('y', (100 - normalizeData[i] - 20).toString())
+                t.setAttribute('fill', fontColor.toString())
                 t.setAttribute('font-size', '32')
                 t.classList = `${id}itemdata`
                 t.innerHTML = data[i].toString()
@@ -294,7 +305,16 @@ const line = ref('M0,0')
 const getLine = computed(() => {
 
     line.value = 'M'
-    let data = getData.value.value
+    // let data = getData.value.value
+    //使用标准化函数标准数据
+    let data = [];
+    let min = getData.value.min_ranger
+    let max = getData.value.max_ranger
+    getData.value.value.forEach((item) => {
+        data.push(Math.floor(normalize(item,min,max)))
+    })
+    
+
     let breakPoint = Math.floor(chartWidth / (data.length - 1)) === Infinity ? 600 : Math.floor(chartWidth / (data.length - 1))
 
     let middlePoint = (i) => {
@@ -343,6 +363,9 @@ const getLine = computed(() => {
 onMounted(() => {
     createNode()
     addEvent()
+    
+    
+
     // console.log(props.options.value)
 
 })
@@ -371,6 +394,8 @@ onUpdated(() => {
 
         addEvent()
     }
+
+    
 })
 
 
@@ -430,8 +455,10 @@ onUpdated(() => {
 }
 
 .ani {
-    // transition: .1s all ease-in-out;
+    transition: .5s all ease;
 }
+
+
 
 .item {
     transition: 1s all ease-in-out;
@@ -442,4 +469,6 @@ onUpdated(() => {
     &:extend(.item);
     caret-color: transparent;
 }
+
+
 </style>
