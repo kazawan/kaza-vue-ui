@@ -215,10 +215,16 @@ const createNode = () => {
     let g = document.querySelector(`.${id}`)
     if (data.length != 0) {
         temp.value.isEmty = false
-        if (data.length === 1) {
+        if (data.length === 1 ) {
             creattext('300', normalizeData[0], data[0], g)
             createline(300, 1, normalizeData[0], g)
             createblockitem('0', '600', g)
+        }else if(data.length === 2){
+            data.forEach((item,i)=>{
+                creattext((300 * i + (300 / 2)).toString(), normalizeData[i], data[i], g)
+                createline(300, i, normalizeData[i], g)
+                createblockitem(((300 * i)).toString(), 300, g)
+            })
         } else {
             data.forEach((item, i) => {
                 if (i === 0) {
@@ -387,7 +393,13 @@ onUpdated(() => {
 
     let itemdata = document.querySelectorAll(`.${id}itemdata`)
     let item = document.querySelectorAll(`.${id}item`)
+    let normalizeData = []
+    let min = getData.value.min_ranger
+    let max = getData.value.max_ranger
 
+    getData.value.value.forEach((item) => {
+        normalizeData.push(normalize(item, min, max))
+    })
 
     let g = document.querySelector(`.${id}`)
     if (blockLength != lineLength) {
@@ -396,14 +408,16 @@ onUpdated(() => {
         addEvent()
     } else {
         blockitem.forEach((el, i) => {
-            itemdata[i].setAttribute('y', (100 - data[i] - 20))
+            itemdata[i].setAttribute('y', (100 - normalizeData[i] - 20))
             itemdata[i].innerHTML = data[i]
-            item[i].setAttribute('d', `M${breakPoint() * i},0 ${breakPoint() * (i)},${data[i]}`)
+            item[i].setAttribute('d', `M${breakPoint() * i},0 ${breakPoint() * (i)},${normalizeData[i]}`)
         })
 
         addEvent()
     }
 
+    
+    
 
 })
 
