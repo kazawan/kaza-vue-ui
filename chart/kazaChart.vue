@@ -116,7 +116,6 @@ function testnor(num, min, max) {
 
     } else {
         return (num - min) / (max - min) * 100
-
     }
 }
 
