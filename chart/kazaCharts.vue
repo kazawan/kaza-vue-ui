@@ -23,8 +23,8 @@
                     Data</text>
             </g>
             <g v-show="!getData.id && !getData.isEmty" class="ani" transform="translate(0, 100) scale(1,-1)">
-                <text text-anchor="middle" x="300" y="50" fill="#000000" font-size="32" class="cpuitemdata"
-                    style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">No id
+                <text text-anchor="middle" x="300" y="50" fill="red" font-size="32" class="cpuitemdata"
+                    style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">Error: No id
                     Inputed</text>
             </g>
 
@@ -372,11 +372,7 @@ const getLine = computed(() => {
 onMounted(() => {
     createNode()
     addEvent()
-
-
-
     // console.log(props.options.value)
-
 })
 onUpdated(() => {
     if (getData.value.id === null) {
