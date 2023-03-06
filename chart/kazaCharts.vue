@@ -33,6 +33,11 @@
     </div>
 </template>
 
+<script>
+export default {
+    name:'kazaCharts'
+}
+</script>
 
 <script setup>
 //TODO 添加字体大小 颜色 

@@ -93,6 +93,12 @@
     }
 }
 </style>
+
+<script>
+export default {
+    name:'kazaProgressBar'
+}
+</script>
   
 <script setup>
 

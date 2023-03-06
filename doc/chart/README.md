@@ -1,7 +1,7 @@
-# :gear: Vue3 kaza-UI 
-这么烂大街的东西居然就上npm了:shit:
+# :gear: Vue3 kaza-UI Chart
 
-![1](./lib/img/total.png)
+
+![1](./../../img/charts.jpg )
 
 ## :tada:安装 install
 ```
@@ -15,17 +15,6 @@ import kazaUI from 'kaza-ui'
 import 'kaza-ui/lib/style.css'
 app.use(kazaUI)
 ```
-使用
-```
-<kazaCharts options="{}" />
-<kazaProgressBar  ...args />
-```
-
-## :floppy_disk: Doc文档
-
----
-* ### kazaCharts
- * :chart_with_upwards_trend: kazaCharts使用 [README](./lib/doc/chart/README.md)
 使用
 ```
 <template>
@@ -52,7 +41,7 @@ const chartOptions = reactive({
 ```
 
 
-#### :floppy_disk:Api
+## :floppy_disk:Api
 
 ```
 <template>
@@ -73,27 +62,3 @@ const chartOptions = reactive({
 | 6    | max_ranger   |  number | 100  | 图表最大值 |
 | 7    | auto_normalize   | Boolean | false  | 自动标准化数值 避免超出图表 |
 | 8    | value   | Array | []  |  图表数据值 |
-
-
-
----
-### kazaProgressBar
-* :bar_chart:kazaProgressBar [README](./lib/doc/progressbar/README.md)。
-#### :floppy_disk:Api
-使用
-```
-<bar width="200px" height="200px" :count='getCount' barColor="#02C874" boardColor="000" title="usage" titleFont_size="20px"
-      titleTop="32%" />
-```
-
-|  :clipboard: | :bar_chart: api | :pushpin:类型   | :pencil2:默认值 | :ledger:备注 |
-| :------: | :------: | :------:  | :------:   | :------:   |
-| 1    | width   | String   | '150px'  | 包住svg的div的宽度  |
-| 2    | height   | String   |'150px' | 包住svg的div的高度  |
-| 3    | count   | Number   | 0 | 中间那个数字 |
-| 4    | font_size   | String   |'35px' | 中间那个数字的字体大小 |
-| 5    | barColor   | String   |'#1e4adb'| 进度条的颜色 |
-| 6    | boardColor   | String   |'#ccc'| 边框的颜色 |
-| 7    | title   | String   |' ' | 自定义标题 |
-| 8    | titleTop   | String   |'35%' | 标题高度 |
-| 9    | titleFont_size   | String   |'10px'| 标题字体大小 |
