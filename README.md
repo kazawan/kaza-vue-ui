@@ -1,7 +1,7 @@
 # :gear: Vue3 kaza-UI 
 这么烂大街的东西居然就上npm了:shit:
 
-![1](./lib/img/total.png)
+![1](https://github.com/kazawan/kaza-vue-ui/blob/main/img/total.png?raw=true)
 
 ## :tada:安装 install
 ```
