@@ -42,7 +42,7 @@ const chartOptions = reactive({
   fontColor:'#fff', //字体的颜色
   width: 200, //图标宽度 高度按比例自动设置
   min_ranger: 0, //自定义最小值
-  max_ranger: 10, //自定义最大值
+  max_ranger: 100, //自定义最大值
   auto_normalize: true, //按value的最小值最大值自动设置范围 此时min_ranger max_ranger 无效
   value: [-1.5,5.55,3.33] // 数值 如果没有数据请填 []
 })
