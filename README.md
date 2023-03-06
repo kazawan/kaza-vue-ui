@@ -25,7 +25,7 @@ app.use(kazaUI)
 
 ---
 * ### kazaCharts
- * :chart_with_upwards_trend: kazaCharts使用 [README](./lib/doc/chart/README.md)
+ * :chart_with_upwards_trend: kazaCharts使用 [README](https://github.com/kazawan/kaza-vue-ui/blob/main/doc/chart/README.md)
 使用
 ```
 <template>
@@ -78,7 +78,7 @@ const chartOptions = reactive({
 
 ---
 ### kazaProgressBar
-* :bar_chart:kazaProgressBar [README](./lib/doc/progressbar/README.md)。
+* :bar_chart:kazaProgressBar [README](https://github.com/kazawan/kaza-vue-ui/blob/main/doc/progressbar/README.md)。
 #### :floppy_disk:Api
 使用
 ```
