@@ -1,7 +1,7 @@
 # :gear: Vue3 kaza-UI 
 这么烂大街的东西居然就上npm了:shit:
 
-![1](./lib/img/total.png)
+![1](https://github.com/kazawan/kaza-vue-ui/blob/main/img/total.png?raw=true)
 
 ## :tada:安装 install
 ```
@@ -25,7 +25,7 @@ app.use(kazaUI)
 
 ---
 * ### kazaCharts
- * :chart_with_upwards_trend: kazaCharts使用 [README](./lib/doc/chart/README.md)
+ * :chart_with_upwards_trend: kazaCharts使用 [README](https://github.com/kazawan/kaza-vue-ui/blob/main/doc/chart/README.md)
 使用
 ```
 <template>
@@ -42,7 +42,7 @@ const chartOptions = reactive({
   fontColor:'#fff', //字体的颜色
   width: 200, //图标宽度 高度按比例自动设置
   min_ranger: 0, //自定义最小值
-  max_ranger: 10, //自定义最大值
+  max_ranger: 100, //自定义最大值
   auto_normalize: true, //按value的最小值最大值自动设置范围 此时min_ranger max_ranger 无效
   value: [-1.5,5.55,3.33] // 数值 如果没有数据请填 []
 })
@@ -78,7 +78,7 @@ const chartOptions = reactive({
 
 ---
 ### kazaProgressBar
-* :bar_chart:kazaProgressBar [README](./lib/doc/progressbar/README.md)。
+* :bar_chart:kazaProgressBar [README](https://github.com/kazawan/kaza-vue-ui/blob/main/doc/progressbar/README.md)。
 #### :floppy_disk:Api
 使用
 ```
