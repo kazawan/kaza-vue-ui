@@ -196,11 +196,25 @@ const createline = (bp, i, normalizeData, eltomount) => {
     eltomount.appendChild(line)
 }
 
+
+const makeSeeing = (normalizeData)=>{
+    if(100 - normalizeData -20 >= 100){
+        return 80;
+    }
+    if(100 - normalizeData -20 <= 0){
+        return 20
+    }else{
+        return 100 - normalizeData -20
+    }
+}
+
 const creattext = (x, normalizeData, data, eltomount) => {
+    console.log(100 - normalizeData >=100 ? 80 :100 - normalizeData  )
     let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
     t.setAttribute('text-anchor', 'middle')
     t.setAttribute('x', x)
-    t.setAttribute('y', (100 - normalizeData - 20).toString()) //
+    // t.setAttribute('y', (100 - normalizeData -20).toString()) //
+    t.setAttribute('y', makeSeeing(normalizeData).toString()) //
     t.setAttribute('fill', getData.value.fontColor.toString())
     t.setAttribute('font-size', '32')
     t.classList = `${getData.value.id}itemdata`
