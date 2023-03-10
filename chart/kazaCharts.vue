@@ -17,12 +17,12 @@
             <g :class="getData.id" transform="translate(0, 100) scale(1,-1)" class="ani">
 
             </g>
-            <g v-show="getData.isEmty" class="ani" transform="translate(0, 100) scale(1,-1)">
+            <g v-if="getisEmty" class="ani" transform="translate(0, 100) scale(1,-1)">
                 <text text-anchor="middle" x="300" y="50" fill="#000000" font-size="32" class="cpuitemdata"
                     style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">No
                     Data</text>
             </g>
-            <g v-show="!getData.id && !getData.isEmty" class="ani" transform="translate(0, 100) scale(1,-1)">
+            <g v-show="!getData.id && !getisEmty" class="ani" transform="translate(0, 100) scale(1,-1)">
                 <text text-anchor="middle" x="300" y="50" fill="red" font-size="32" class="cpuitemdata"
                     style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">Error: No id
                     Inputed</text>
@@ -92,7 +92,7 @@ const getData = computed(() => {
         id: props.options.id || null,
         color: props.options.color || '#000',
         width: props.options.width || 300,
-        height: Math.floor(props.options.width / 3),
+        // height: Math.floor(props.options.width / 3),
         autoNormalize: props.options.auto_normalize === true ? true : false,
         value: props.options.value || [],
         isEmty: props.options.value.length === 0 ? true : false,
@@ -105,6 +105,8 @@ const getData = computed(() => {
 
 
 
+
+
 let breakPoint = () => {
     return Math.floor(chartWidth / (getData.value.value.length - 1)) === Infinity ? 600 : Math.floor(chartWidth / (getData.value.value.length - 1))
 }
@@ -114,15 +116,20 @@ const props = defineProps(
     {
         options: {
             type: Object,
-        }
+        },
     }
 )
 const getWidth = computed(() => {
     // return props.options.width + 'px'
     return temp.value.width + 'px'
+    
 })
 const getHeight = computed(() => {
-    return temp.value.height + 'px'
+    return Math.floor(temp.value.width / 3) + 'px'
+})
+
+const getisEmty = computed(() => {
+    return temp.value.isEmty
 })
 
 
