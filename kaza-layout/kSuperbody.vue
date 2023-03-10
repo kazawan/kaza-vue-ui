@@ -8,10 +8,13 @@ export default {
 <script setup>
 import { onMounted, onUpdated, ref } from 'vue';
 const superbody = ref(null)
+const testbar = ref(null)
 const props = defineProps({
     iphoneSize:String,
     winSize:String,
+    showDevice:Boolean,
 })
+const device = ref('')
 
 const devivesSet = {
     'Win64': {
@@ -21,17 +24,20 @@ const devivesSet = {
     },
     'iPhone': {
         name: 'iPhone...',
-        bgcolor:'#2C3A47',
+        bgcolor:'#55E6C1',
         fontSize:props.iphoneSize || '24px'
     },
 }
 const devicesCheck = () => {
     const userAgentDevies = navigator.userAgent
     const html = document.querySelectorAll('html')[0]
+    
     Object.keys(devivesSet).forEach((item,i,Object) => {
         if (userAgentDevies.indexOf(item) != -1) {
             // superbody.value.style.backgroundColor = devivesSet[item].bgcolor
             html.style.fontSize = devivesSet[item].fontSize
+            device.value=devivesSet[item].name
+            testbar.value.style.backgroundColor = devivesSet[item].bgcolor
         }
     })
 
@@ -50,6 +56,8 @@ onUpdated(()=>{
 
 <template>
     <div ref="superbody" class="superbody">
+        <div v-if="showDevice" class="testbar" ref="testbar" style="color:#000;">suprerbody&#128161:device is {{ device }}</div>
+        
         <slot />
     </div>
 </template>

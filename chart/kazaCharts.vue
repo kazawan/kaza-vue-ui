@@ -1,5 +1,9 @@
 <template>
-    <div class=" inlineBlock">
+    <!-- <div class=" inlineBlock"> -->
+    <div >
+
+        <slot name="title"></slot>
+        <slot name="subtitle"></slot>
         <svg class="box chart" :id="getData.id" viewBox="0 0 600 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
                 <linearGradient id="gradient">
@@ -9,6 +13,7 @@
                     <stop offset="100%" stop-color="#d9f2f6" />
                 </linearGradient>
             </defs>
+
             <g v-show='getData.id' transform="translate(0, 100) scale(1,-1)">
                 <path fill="none" :stroke="getData.color" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"
                     :d='getLine'></path>
@@ -24,18 +29,21 @@
             </g>
             <g v-show="!getData.id && !getisEmty" class="ani" transform="translate(0, 100) scale(1,-1)">
                 <text text-anchor="middle" x="300" y="50" fill="red" font-size="32" class="cpuitemdata"
-                    style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">Error: No id
+                    style="opacity: .5; transform-origin: center; transform: rotateX(180deg); user-select: none;">Error: No
+                    id
                     Inputed</text>
             </g>
 
         </svg>
-
     </div>
+
+
+    <!-- </div> -->
 </template>
 
 <script>
 export default {
-    name:'kazaCharts'
+    name: 'kazaCharts'
 }
 </script>
 
@@ -122,7 +130,7 @@ const props = defineProps(
 const getWidth = computed(() => {
     // return props.options.width + 'px'
     return temp.value.width + 'px'
-    
+
 })
 const getHeight = computed(() => {
     return Math.floor(temp.value.width / 3) + 'px'
@@ -227,12 +235,12 @@ const createNode = () => {
     let g = document.querySelector(`.${id}`)
     if (data.length != 0) {
         temp.value.isEmty = false
-        if (data.length === 1 ) {
+        if (data.length === 1) {
             creattext('300', normalizeData[0], data[0], g)
             createline(300, 1, normalizeData[0], g)
             createblockitem('0', '600', g)
-        }else if(data.length === 2){
-            data.forEach((item,i)=>{
+        } else if (data.length === 2) {
+            data.forEach((item, i) => {
                 creattext((300 * i + (300 / 2)).toString(), normalizeData[i], data[i], g)
                 createline(300, i, normalizeData[i], g)
                 createblockitem(((300 * i)).toString(), 300, g)
@@ -427,8 +435,8 @@ onUpdated(() => {
         addEvent()
     }
 
-    
-    
+
+
 
 })
 
@@ -453,15 +461,19 @@ onUpdated(() => {
 .inlineBlock {
     margin-left: 0px;
     margin-right: 0px;
-    width: @mainWidth;
-    height: @mainHeight;
+    width: 100%;
+    height: 100px;
+    margin: 0;
     font-family: 'Oswald', sans-serif;
 
 }
 
 .box {
-    width: @mainWidth;
-    height: @mainHeight;
+    width: 100%;
+    height: 100px;
+    margin: 0;
+    box-sizing: border-box;
+    // height: @mainHeight;
     // vertical-align: middle;
     position: relative;
     background-color: #ffffff00;
