@@ -1,6 +1,6 @@
 <template>
     <!-- <div class=" inlineBlock"> -->
-    <div style="overflow: hidden;" >
+    <div style="overflow: hidden;">
 
         <slot name="title"></slot>
         <slot name="subtitle"></slot>
@@ -9,14 +9,14 @@
                 <linearGradient :id='getData.gid' x1="0" y1="0" x2="0" y2="1">
                     <!-- <stop offset="0" stop-color="#d9f2f6" />
                     <stop offset="100%" stop-color="#1b9cfc" /> -->
-                    <stop offset="0" :stop-color="getData.minValCol " />
-                    <stop offset="100%" :stop-color="getData.maxValCol"  />
+                    <stop offset="0%" :stop-color="getData.minValCol" />
+                    <stop offset="100%" :stop-color="getData.maxValCol" />
                 </linearGradient>
             </defs>
 
             <g v-show='getData.id' transform="translate(0, 100) scale(1,-1)  ">
-                <path :fill="getData.urlgid" :stroke="getData.color" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"
-                    :d='getLine'  ></path>
+                <path :fill="getData.urlgid" :stroke="getData.color" stroke-width="10" stroke-linejoin="round"
+                    stroke-linecap="round" :d='getLine'></path>
 
             </g>
             <g :class="getData.id" transform="translate(0, 100) scale(1,-1)" class="ani">
@@ -101,8 +101,8 @@ const getData = computed(() => {
     console.log(props.options.colorUnderLine)
     temp.value = {
         id: props.options.id || null,
-        gid:`${props.options.id}liner`,
-        urlgid: props.options.colorUnderLine === false ?   'none' : `url(#${props.options.id}liner)` ,
+        gid: `${props.options.id}liner`,
+        urlgid: props.options.colorUnderLine === false ? 'none' : `url(#${props.options.id}liner)`,
         color: props.options.color || '#000',
         width: props.options.width || 300,
         autoNormalize: props.options.auto_normalize === true ? true : false,
@@ -111,9 +111,9 @@ const getData = computed(() => {
         fontColor: props.options.fontColor || '#000',
         min_ranger: props.options.auto_normalize === true ? getMaxMin(props.options.value).min : props.options.min_ranger ? props.options.min_ranger : 0,
         max_ranger: props.options.auto_normalize === true ? getMaxMin(props.options.value).max : props.options.max_ranger ? props.options.max_ranger : 100,
-        maxValCol:props.options.maxValCol || '#1B9CFC' ,
-        minValCol:props.options.minValCol || '#fff',
-        colorUnderLine:props.options.colorUnderLine === undefined ?  true : props.options.colorUnderLine ,
+        maxValCol: props.options.maxValCol || '#1B9CFC',
+        minValCol: props.options.minValCol || '#fff',
+        colorUnderLine: props.options.colorUnderLine === undefined ? true : props.options.colorUnderLine,
     }
     return temp.value
 })
@@ -146,6 +146,7 @@ const getHeight = computed(() => {
 const getisEmty = computed(() => {
     return temp.value.isEmty
 })
+
 
 
 
@@ -204,14 +205,14 @@ const createline = (bp, i, normalizeData, eltomount) => {
 }
 
 
-const makeSeeing = (normalizeData)=>{
-    if(100 - normalizeData -20 >= 100){
+const makeSeeing = (normalizeData) => {
+    if (100 - normalizeData - 20 >= 100) {
         return 80;
     }
-    if(100 - normalizeData -20 <= 0){
+    if (100 - normalizeData - 20 <= 0) {
         return 20
-    }else{
-        return 100 - normalizeData -20
+    } else {
+        return 100 - normalizeData - 20
     }
 }
 
@@ -385,7 +386,7 @@ const getLine = computed(() => {
             // line.value = line.value + ' ' + (breakPoint * i) + ',' + data[i] + ' '
             // line.value = ` ${line.value} ${middlePoint(i)},${data[i]} `
             line.value = `M-10,-50 ${middlePoint(i)},${data[i]} `
-        }else if(i === data.length - 1){
+        } else if (i === data.length - 1) {
             // console.log('last')
             let cPoint = `C${middlePoint(i)},${data[i - 1]} ${middlePoint(i)},${data[i]} `
             let crulPoint = `${crulBreakPoint(i)},${data[i]} `
@@ -500,7 +501,7 @@ onUpdated(() => {
 
 .box {
     width: 100%;
-    height:  60px;
+    height: 60px;
     margin: 0;
     box-sizing: border-box;
     // height: @mainHeight;
