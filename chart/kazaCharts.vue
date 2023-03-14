@@ -1,22 +1,22 @@
 <template>
     <!-- <div class=" inlineBlock"> -->
-    <div >
+    <div style="overflow: hidden;" >
 
         <slot name="title"></slot>
         <slot name="subtitle"></slot>
         <svg class="box chart" :id="getData.id" viewBox="0 0 600 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-                <linearGradient id="gradient">
-                    <stop offset="0" stop-color="#f7f8f8" />
-                    <stop offset="33%" stop-color="#43c4da" />
-                    <stop offset="65%" stop-color="#e244de" />
-                    <stop offset="100%" stop-color="#d9f2f6" />
+                <linearGradient :id='getData.gid' x1="0" y1="0" x2="0" y2="1">
+                    <!-- <stop offset="0" stop-color="#d9f2f6" />
+                    <stop offset="100%" stop-color="#1b9cfc" /> -->
+                    <stop offset="0" :stop-color="getData.minValCol " />
+                    <stop offset="100%" :stop-color="getData.maxValCol"  />
                 </linearGradient>
             </defs>
 
-            <g v-show='getData.id' transform="translate(0, 100) scale(1,-1)">
-                <path fill="none" :stroke="getData.color" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"
-                    :d='getLine'></path>
+            <g v-show='getData.id' transform="translate(0, 100) scale(1,-1)  ">
+                <path :fill="getData.urlgid" :stroke="getData.color" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"
+                    :d='getLine'  ></path>
 
             </g>
             <g :class="getData.id" transform="translate(0, 100) scale(1,-1)" class="ani">
@@ -48,7 +48,9 @@ export default {
 </script>
 
 <script setup>
-//TODO 添加字体大小 颜色 
+/**
+ * todo 修改数值位置有时不显示的问题
+ */
 import { onMounted, ref, computed, watch, onUpdated } from 'vue';
 
 
@@ -96,17 +98,22 @@ const chartWidth = 600;
 //这样可以提供默认值，不填也可以。。
 const temp = ref({})
 const getData = computed(() => {
+    console.log(props.options.colorUnderLine)
     temp.value = {
         id: props.options.id || null,
+        gid:`${props.options.id}liner`,
+        urlgid: props.options.colorUnderLine === false ?   'none' : `url(#${props.options.id}liner)` ,
         color: props.options.color || '#000',
         width: props.options.width || 300,
-        // height: Math.floor(props.options.width / 3),
         autoNormalize: props.options.auto_normalize === true ? true : false,
         value: props.options.value || [],
         isEmty: props.options.value.length === 0 ? true : false,
         fontColor: props.options.fontColor || '#000',
         min_ranger: props.options.auto_normalize === true ? getMaxMin(props.options.value).min : props.options.min_ranger ? props.options.min_ranger : 0,
         max_ranger: props.options.auto_normalize === true ? getMaxMin(props.options.value).max : props.options.max_ranger ? props.options.max_ranger : 100,
+        maxValCol:props.options.maxValCol || '#1B9CFC' ,
+        minValCol:props.options.minValCol || '#fff',
+        colorUnderLine:props.options.colorUnderLine === undefined ?  true : props.options.colorUnderLine ,
     }
     return temp.value
 })
@@ -209,7 +216,7 @@ const makeSeeing = (normalizeData)=>{
 }
 
 const creattext = (x, normalizeData, data, eltomount) => {
-    console.log(100 - normalizeData >=100 ? 80 :100 - normalizeData  )
+    // console.log(100 - normalizeData >=100 ? 80 :100 - normalizeData  )
     let t = document.createElementNS('http://www.w3.org/2000/svg', 'text')
     t.setAttribute('text-anchor', 'middle')
     t.setAttribute('x', x)
@@ -376,7 +383,14 @@ const getLine = computed(() => {
     for (let i = 0; i < data.length; i++) {
         if (i === 0) {
             // line.value = line.value + ' ' + (breakPoint * i) + ',' + data[i] + ' '
-            line.value = ` ${line.value} ${middlePoint(i)},${data[i]} `
+            // line.value = ` ${line.value} ${middlePoint(i)},${data[i]} `
+            line.value = `M-10,-50 ${middlePoint(i)},${data[i]} `
+        }else if(i === data.length - 1){
+            // console.log('last')
+            let cPoint = `C${middlePoint(i)},${data[i - 1]} ${middlePoint(i)},${data[i]} `
+            let crulPoint = `${crulBreakPoint(i)},${data[i]} `
+            line.value = `${line.value} ${cPoint} ${crulPoint}  L700,0 700,-50`
+            // console.log(line.value)
         } else {
             let cPoint = `C${middlePoint(i)},${data[i - 1]} ${middlePoint(i)},${data[i]} `
             let crulPoint = `${crulBreakPoint(i)},${data[i]} `
@@ -410,6 +424,7 @@ const getLine = computed(() => {
 
 
 onMounted(() => {
+    console.log(getData.value.colorUnderLine)
     createNode()
     addEvent()
 })
@@ -472,6 +487,7 @@ onUpdated(() => {
 @mainHeight: v-bind(getHeight);
 
 
+
 .inlineBlock {
     margin-left: 0px;
     margin-right: 0px;
@@ -484,7 +500,7 @@ onUpdated(() => {
 
 .box {
     width: 100%;
-    height: 100px;
+    height:  60px;
     margin: 0;
     box-sizing: border-box;
     // height: @mainHeight;
