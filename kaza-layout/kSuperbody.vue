@@ -94,14 +94,16 @@ onBeforeUnmount(() =>{
     position: relative;
     width: @superWidth;
     height: @superHeight;
-
+    
     .superbodyspan {
         position: absolute;
-        padding: 0 10px 0 10px;
-        height: 100%;
-        background-color: #ccc;
         top: 0;
         right: 0;
+        padding: 0 10px 0 10px;
+        height: 100%;
+        background-color: #303030;
+        color: #fff;
+        border-radius: 5px;
         justify-content: center;
     }
 }
