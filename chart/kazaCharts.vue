@@ -98,7 +98,7 @@ const chartWidth = 600;
 //这样可以提供默认值，不填也可以。。
 const temp = ref({})
 const getData = computed(() => {
-    console.log(props.options.colorUnderLine)
+    // console.log(props.options.colorUnderLine)
     temp.value = {
         id: props.options.id || null,
         gid: `${props.options.id}liner`,
@@ -425,7 +425,7 @@ const getLine = computed(() => {
 
 
 onMounted(() => {
-    console.log(getData.value.colorUnderLine)
+    // console.log(getData.value.colorUnderLine)
     createNode()
     addEvent()
 })
