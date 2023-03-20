@@ -103,12 +103,13 @@ const createTr = (month, year, weekday) => {
             div.style.backgroundColor = '#9AECDB'
             div.style.width = '11px'
             div.style.height = '11px'
-
+            div.setAttribute('date',`${year}-${month}-${day}`)
+            div.setAttribute('class','cals')
             if (day === new Date().getDate() && month === new Date().getMonth() + 1 && year === new Date().getFullYear()) {
                 div.style.backgroundColor = '#EAB543'
             }
             if (day > totleDay) {
-                console.log(i)
+                // console.log(i)
                 div.style.backgroundColor = '#ccc'
                 div.setAttribute('date', `${month + 1 === 13 ? year + 1 : year}-${month + 1 === 13 ? 1 : month + 1}-${day - totleDay}`)
             }
