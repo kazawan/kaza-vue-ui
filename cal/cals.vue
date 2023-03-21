@@ -127,7 +127,7 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 </script >
 
 <template>
-    <Transition name="fade" appear>
+    
         <div class="top">
             <div class="year">
                 {{ Year }}
@@ -136,9 +136,9 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                 {{ Month }}
             </div>
         </div>
-    </Transition>
+   
 
-    <Transition name="fade" appear>
+    
         <div class="container">
             <div class="side">
                 <div v-for="i in weekDays" :class="['sidebox', i === 'Sun' ? 'lastbox' : '']">{{ i }}</div>
@@ -151,14 +151,13 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                 </div>
             </div>
         </div>
-    </Transition>
-    <Transition name="fade" appear>
+   
         <div class="footer">
             <div class="prev" @click="prev">prev</div>
             <div class="reset" @click="reset">reset</div>
             <div class="next" @click="next">next</div>
         </div>
-    </Transition>
+    
 </template>
 
 
@@ -295,21 +294,7 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     }
 }
 
-.fade-enter-active,
-.fade-leave-active {
-    // transform: translateY(0);
-    opacity: 1;
-    transition: 1s ease;
-    transition-delay: 0;
 
-}
-
-.fade-enter-from,
-.fade-leave-to {
-
-    transform: translateY(20px);
-    opacity: 0;
-}
 
 
 
