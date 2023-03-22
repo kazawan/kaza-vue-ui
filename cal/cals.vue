@@ -1,15 +1,17 @@
 <script>
 export default {
     name: "kaza-cals",
-    components: { TransitionGroup }
+    
 }
 </script>
 <script setup>
-import { onMounted, ref, computed, defineExpose, TransitionGroup } from 'vue';
+import { onMounted, ref, computed, defineExpose, TransitionGroup, onUpdated } from 'vue';
+
+const props = defineProps({
+    data: Object
+})
 
 
-
-const day = ref(42)
 const currentDate = new Date()
 const today = ref(currentDate.getDate())
 const Month = ref(currentDate.getMonth() + 1)
@@ -95,31 +97,112 @@ const prev = () => {
 }
 
 const next = () => {
+    
     Month.value++
     monthCheck()
 }
 const reset = () => {
+
     Month.value = currentDate.getMonth() + 1
     Year.value = currentDate.getFullYear()
 }
 
+const daySelected = ref(Year.value + "-" + Month.value + "-" + today.value)
+const getDaySelected = () => {
+    return daySelected.value
+}
+
+function eMonitor() {
+    let res = cals.value
+    // console.log(cals.value.length)
+    res.forEach((item, index) => {
+        item.classList.remove('hastodo')
+        item.classList.remove('hastodo02')
+        item.classList.remove('hastodo03')
+
+        let temp = ''
+        let year = item.getAttribute('year')
+        let month = item.getAttribute('month')
+        let day = item.getAttribute('day')
+        temp = year + "-" + month + "-" + day
+
+        Object.keys(props.data).forEach(item => {
+            if (temp === item) {
+                console.log(props.data[temp])
+                if (props.data[temp].todo.length <= 2) {
+                    res[index].classList.add('hastodo02')
+                } else if (props.data[temp].todo.length <= 8) {
+                    res[index].classList.add('hastodo03')
+                } else {
+                    res[index].classList.add('hastodo')
+                }
+
+            }
+        })
+
+
+        // props.data.forEach((propsItem, i) => {
+        //     // console.log(prpsItem.date ,i)
+        //     if (temp === propsItem.date) {
+        //         if (propsItem.todo.length <= 2) {
+        //             res[index].classList.add('hastodo02')
+        //         } else if (propsItem.todo.length <= 8) {
+        //             res[index].classList.add('hastodo03')
+        //         } else {
+        //             res[index].classList.add('hastodo')
+        //         }
+
+        //     } else {
+        //         // console.log(false)
+        //     }
+        // })
+        // console.log(`${year}-${month}-${day}`)
+
+    })
+}
+
+onMounted(() => {
+    eMonitor()
+    // console.log(props.data)
+
+})
+
+onUpdated(() => {
+    eMonitor()
+})
+
 defineExpose({
+    daySelected,
     show,
-    add() {
+    nextMonth() {
         Month.value++
         monthCheck()
     },
-    min() {
+    prevMonth() {
         Month.value--
         monthCheck()
     },
     reset() {
         Month.value = currentDate.getMonth() + 1
         Year.value = currentDate.getFullYear()
-    }
+    },
+
+
+
 })
 
 const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const mouseSelected = ref('today')
+
+const emit = defineEmits(["clickItem"]);
+const clickauto = (data) => {
+    const index = data.indexOf('-')
+    mouseSelected.value = data.substring(index + 1)
+}
+const clickItem = (data) => {
+    clickauto(data)
+    emit("clickItem", data)
+}
 
 
 
@@ -127,37 +210,38 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 </script >
 
 <template>
-    
-        <div class="top">
-            <div class="year">
-                {{ Year }}
-            </div>
-            <div class="month">
-                {{ Month }}
-            </div>
+    <div class="top">
+        <div class="year">
+            {{ Year }}
         </div>
-   
+        <div class="month">
+           TODAY {{ new Date().getMonth() + 1 }} / {{  new Date().getDate() }}
+        </div>
+        <div class="dayselect">{{ mouseSelected }}</div>
+    </div>
 
-    
-        <div class="container">
-            <div class="side">
-                <div v-for="i in weekDays" :class="['sidebox', i === 'Sun' ? 'lastbox' : '']">{{ i }}</div>
-            </div>
-            <div class="calbox">
-                <div v-for=" (d, index) in days.day" class="day">
-                    <div :class="['item', days.month[index] === Month ? '' : 'xmonth', days.day[index] === new Date().getDate() && days.month[index] === new Date().getMonth() + 1 && days.year[index] === new Date().getFullYear() ? 'today' : '']"
-                        :year="days.year[index]" :month="days.month[index]" :day="d" :key="index" ref="cals">{{ d }}
-                    </div>
+
+
+    <div class="container">
+        <div class="side">
+            <div v-for="i in weekDays" :class="['sidebox', i === 'Sun' ? 'lastbox' : '']">{{ i }}</div>
+        </div>
+        <div class="calbox">
+            <div v-for=" (d, index) in days.day" class="day">
+                <div @click="clickItem(days.year[index] + '-' + days.month[index] + '-' + d)"
+                    :class="['item', days.month[index] === Month ? '' : 'xmonth', days.day[index] === new Date().getDate() && days.month[index] === new Date().getMonth() + 1 && days.year[index] === new Date().getFullYear() ? 'today' : '']"
+                    :year="days.year[index]" :month="days.month[index]" :day="d" :key="index" ref="cals">{{ d }}
+
                 </div>
             </div>
         </div>
-   
-        <div class="footer">
-            <div class="prev" @click="prev">prev</div>
-            <div class="reset" @click="reset">reset</div>
-            <div class="next" @click="next">next</div>
-        </div>
-    
+    </div>
+
+    <div class="footer">
+        <div class="prev" @click="prev">prev</div>
+        <div class="reset" @click="reset">reset</div>
+        <div class="next" @click="next">next</div>
+    </div>
 </template>
 
 
@@ -180,7 +264,7 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     // background-color: #ccc;
     // border-radius: 10px;
     .year {
-        width: 48%;
+        width: 30%;
         background-color: #000;
         color: #fff;
         font-size: 12px;
@@ -192,6 +276,13 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     .month {
         .year;
+        width: 40%;
+    }
+
+    .dayselect{
+        .year;
+        width: 20%;
+        background-color: #55E6C1;
     }
 
 }
@@ -278,6 +369,7 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                 cursor: pointer;
                 z-index: 10;
 
+                // opacity: .5;
                 &:hover {
                     background-color: #55E6C1;
                 }
@@ -290,9 +382,28 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
             .today {
                 background-color: #EAB543;
             }
+
+
+
+            .hastodo {
+                // border-top: 4px solid #FC427B;
+                background-color: #FC427B;
+            }
+
+            .hastodo02 {
+                background-color: #FC427B;
+                opacity: .3;
+            }
+
+            .hastodo03 {
+                background-color: #FC427B;
+                opacity: .7;
+            }
         }
     }
 }
+
+
 
 
 
