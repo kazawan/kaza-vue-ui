@@ -42,10 +42,16 @@ export default {
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+// 定义props
 const props = defineProps({
+    // 日期
     date: String,
+    // 待办事项
     todos: Object,
 })
+
+
+
 const todotime = computed(() => {
     return props.date || 'No Date insert'
 })
@@ -55,14 +61,16 @@ const getTodo = computed(() => {
     return props.todos || {}
 })
 
+const todotags = computed(() => [...new Set(props.todos.map(item => item.tags))]);
 
-const todotags = computed(()=>{
-    let temp = []
-    props.todos.forEach(item=>{
-        temp.push(item.tags)
-    })
-    return temp
-})
+
+// const todotags = computed(()=>{
+//     let temp = []
+//     props.todos.forEach(item=>{
+//         temp.push(item.tags)
+//     })
+//     return temp
+// })
 
 
 

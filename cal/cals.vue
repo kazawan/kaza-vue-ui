@@ -125,10 +125,10 @@ function eMonitor() {
         let month = item.getAttribute('month')
         let day = item.getAttribute('day')
         temp = year + "-" + month + "-" + day
-
+        // 遍历props.data，如果temp等于item，就将对应的日期的待办事项数量添加到对应的日期上
         Object.keys(props.data).forEach(item => {
             if (temp === item) {
-                // console.log(props.data[temp])
+                // 如果temp等于item，就将对应的日期的待办事项数量添加到对应的日期上
                 if (props.data[temp].todo.length <= 2) {
                     res[index].classList.add('hastodo02')
                 } else if (props.data[temp].todo.length <= 8) {
@@ -154,23 +154,25 @@ onUpdated(() => {
 })
 
 defineExpose({
+    // 当前选中的日期
     daySelected,
+    // 是否显示
     show,
+    // 下一个月
     nextMonth() {
         Month.value++
         monthCheck()
     },
+    // 上一个月
     prevMonth() {
         Month.value--
         monthCheck()
     },
+    // 重置
     reset() {
         Month.value = currentDate.getMonth() + 1
         Year.value = currentDate.getFullYear()
     },
-
-
-
 })
 
 const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
