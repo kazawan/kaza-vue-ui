@@ -62,8 +62,33 @@ const getTodo = computed(() => {
 })
 
 const todotags = computed(() => [...new Set(props.todos.map(item => item.tags))]);
+/**
+ * todo以下这段是ai写的
+ */
+//为todotags添加点击事件，只显示tags的日程
+const showTodoByTag = (tag) => {
+    const todoList = document.querySelectorAll('.todosideline')
+    todoList.forEach(item => {
+        if (item.querySelector('.todotags').textContent !== tag) {
+            item.style.display = 'none'
+        } else {
+            item.style.display = 'block'
+        }
+    })
+}
 
+const addTagClickEvent = () => {
+    const tagList = document.querySelectorAll('.ttags')
+    tagList.forEach(item => {
+        item.addEventListener('click', () => {
+            showTodoByTag(item.textContent)
+        })
+    })
+}
 
+onMounted(() => {
+    addTagClickEvent()
+})
 // const todotags = computed(()=>{
 //     let temp = []
 //     props.todos.forEach(item=>{
