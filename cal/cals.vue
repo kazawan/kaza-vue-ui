@@ -128,7 +128,7 @@ function eMonitor() {
 
         Object.keys(props.data).forEach(item => {
             if (temp === item) {
-                console.log(props.data[temp])
+                // console.log(props.data[temp])
                 if (props.data[temp].todo.length <= 2) {
                     res[index].classList.add('hastodo02')
                 } else if (props.data[temp].todo.length <= 8) {
@@ -139,24 +139,6 @@ function eMonitor() {
 
             }
         })
-
-
-        // props.data.forEach((propsItem, i) => {
-        //     // console.log(prpsItem.date ,i)
-        //     if (temp === propsItem.date) {
-        //         if (propsItem.todo.length <= 2) {
-        //             res[index].classList.add('hastodo02')
-        //         } else if (propsItem.todo.length <= 8) {
-        //             res[index].classList.add('hastodo03')
-        //         } else {
-        //             res[index].classList.add('hastodo')
-        //         }
-
-        //     } else {
-        //         // console.log(false)
-        //     }
-        // })
-        // console.log(`${year}-${month}-${day}`)
 
     })
 }
