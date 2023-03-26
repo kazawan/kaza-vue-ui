@@ -7,10 +7,12 @@ export default {
 <template>
     <div class="todobody">
         <div class="todotime">
-            Date:{{ todotime }}
+            📟Date:{{ todotime }}
         </div>
+        <div class="todotagsgroup">tags: <span class="ttags" v-for="todotag in todotags">{{ todotag }}</span></div>
         <div v-if="!getTodo" class="nodata">NO DATA</div>
-        <div v-for="todo in getTodo" class="todosideline"  >
+        <div v-for="todo in getTodo" class="todosideline">
+
             <div style="border-bottom:3px dotted #2C3A47;">
                 <div class="todoitem">
                     <span class="todolabel" style="background-color: #2C3A47;color: #fff;">⏱️执行时间:</span>{{ todo.timestart
@@ -32,7 +34,7 @@ export default {
 
         </div>
         <div class="todofooter">
-            footer
+
         </div>
 
     </div>
@@ -53,6 +55,14 @@ const getTodo = computed(() => {
     return props.todos || {}
 })
 
+
+const todotags = computed(()=>{
+    let temp = []
+    props.todos.forEach(item=>{
+        temp.push(item.tags)
+    })
+    return temp
+})
 
 
 
@@ -89,7 +99,7 @@ const getTodo = computed(() => {
 
     .todotime {
         width: 100%;
-        height: 28px;
+        height: 2em;
         background-color: #000;
         color: #fff;
         border-top-right-radius: 10px;
@@ -194,12 +204,27 @@ const getTodo = computed(() => {
     }
 
 
+
+
     .todofooter {
         width: 100%;
+        height: 2em;
         background-color: #ccc;
         .paddingLR;
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
+    }
+
+    .todotagsgroup {
+        .todofooter;
+        border-radius: 0;
+        .ttags{
+            background-color: #F97F51;
+            padding: 0  5px 0 5px;
+            border-radius: 5px;
+            margin-right: .2em;
+            font-size: .8em;
+        }
     }
 
     .nodata {
