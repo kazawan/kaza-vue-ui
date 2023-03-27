@@ -1,7 +1,7 @@
 <script>
 export default {
     name: "kaza-cals",
-    
+
 }
 </script>
 <script setup>
@@ -97,7 +97,7 @@ const prev = () => {
 }
 
 const next = () => {
-    
+
     Month.value++
     monthCheck()
 }
@@ -197,45 +197,55 @@ const clickItem = (data) => {
 </script >
 
 <template>
-    <div class="top">
-        <div class="year">
-            {{ Year }}
+    <div class="calsbody" >
+        <div class="top">
+            <div class="year">
+                {{ Year }}
+            </div>
+            <div class="month">
+                TODAY {{ new Date().getMonth() + 1 }} / {{ new Date().getDate() }}
+            </div>
+            <div class="dayselect">{{ mouseSelected }}</div>
         </div>
-        <div class="month">
-           TODAY {{ new Date().getMonth() + 1 }} / {{  new Date().getDate() }}
-        </div>
-        <div class="dayselect">{{ mouseSelected }}</div>
-    </div>
 
 
 
-    <div class="container">
-        <div class="side">
-            <div v-for="i in weekDays" :class="['sidebox', i === 'Sun' ? 'lastbox' : '']">{{ i }}</div>
-        </div>
-        <div class="calbox">
-            <div v-for=" (d, index) in days.day" class="day">
-                <div @click="clickItem(days.year[index] + '-' + days.month[index] + '-' + d)"
-                    :class="['item', days.month[index] === Month ? '' : 'xmonth', days.day[index] === new Date().getDate() && days.month[index] === new Date().getMonth() + 1 && days.year[index] === new Date().getFullYear() ? 'today' : '']"
-                    :year="days.year[index]" :month="days.month[index]" :day="d" :key="index" ref="cals">{{ d }}
+        <div class="container">
+            <div class="side">
+                <div v-for="i in weekDays" :class="['sidebox', i === 'Sun' ? 'lastbox' : '']">{{ i }}</div>
+            </div>
+            <div class="calbox">
+                <div v-for=" (d, index) in days.day" class="day">
+                    <div @click="clickItem(days.year[index] + '-' + days.month[index] + '-' + d)"
+                        :class="['item', days.month[index] === Month ? '' : 'xmonth', days.day[index] === new Date().getDate() && days.month[index] === new Date().getMonth() + 1 && days.year[index] === new Date().getFullYear() ? 'today' : '']"
+                        :year="days.year[index]" :month="days.month[index]" :day="d" :key="index" ref="cals">{{ d }}
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="footer">
-        <div class="prev" @click="prev">prev</div>
-        <div class="reset" @click="reset">reset</div>
-        <div class="next" @click="next">next</div>
+        <div class="footer">
+            <div class="prev" @click="prev">prev</div>
+            <div class="reset" @click="reset">reset</div>
+            <div class="next" @click="next">next</div>
+        </div>
     </div>
 </template>
 
 
 
 <style lang='less' scoped>
+
+@width: 100%;
 .pointer {
     cursor: pointer;
+}
+
+
+.calsbody{
+    width: @width;
+    height: @width;
 }
 
 .top {
@@ -266,10 +276,11 @@ const clickItem = (data) => {
         width: 40%;
     }
 
-    .dayselect{
+    .dayselect {
         .year;
         width: 20%;
         background-color: #55E6C1;
+        transition: .3s all ease;
     }
 
 }
@@ -298,6 +309,7 @@ const clickItem = (data) => {
     height: 80%;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     box-sizing: border-box;
     justify-content: start;
 
@@ -348,9 +360,9 @@ const clickItem = (data) => {
             box-sizing: border-box;
 
             .item {
-                width: 90%;
-                height: 90%;
-                border-radius: 20%;
+                width: 80%;
+                height: 80%;
+                border-radius: 5px;
                 background-color: #1B9CFC;
                 text-align: center;
                 cursor: pointer;
@@ -359,6 +371,8 @@ const clickItem = (data) => {
                 // opacity: .5;
                 &:hover {
                     background-color: #55E6C1;
+                    transform: scale(1.25);
+                    transition: .5s all ease;
                 }
             }
 

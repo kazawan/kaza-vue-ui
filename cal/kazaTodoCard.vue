@@ -10,33 +10,41 @@ export default {
             📟Date:{{ todotime }}
         </div>
         <div class="todotagsgroup">tags: <span class="ttags" v-for="todotag in todotags">{{ todotag }}</span></div>
+
         <div v-if="!getTodo" class="nodata">NO DATA</div>
         <div v-for="todo in getTodo" class="todosideline">
 
             <div style="border-bottom:3px dotted #2C3A47;">
                 <div class="todoitem">
-                    <span class="todolabel" style="background-color: #2C3A47;color: #fff;">⏱️执行时间:</span>{{ todo.timestart
+                    <span class="todolabel" style="background-color: #2C3A47;color: #fff;">⏱️执行时间:</span>{{
+                        todo.timestart
                     }}
                 </div>
                 <div class="todoitem">
-                    <span class="todolabel" style="background-color: #2C3A47;color: #fff;">🔨待办事项:</span> {{ todo.content }}
+                    <span class="todolabel" style="background-color: #2C3A47;color: #fff;">🔨待办事项:</span> {{
+                        todo.content }}
                 </div>
                 <div class="todoitem">
-                    <span class="todolabel" style="background-color: #2C3A47;color: #fff;">📍地点:</span>{{ todo.workzone }}
+                    <span class="todolabel" style="background-color: #2C3A47;color: #fff;">📍地点:</span>{{ todo.workzone
+                    }}
                 </div>
                 <div class="todoitem" style="margin-bottom: .5em;">
-                    <span class="todolabel" style="background-color: #2C3A47;color: #fff;">💳 收入:</span>{{ todo.payment ||
+                    <span class="todolabel" style="background-color: #2C3A47;color: #fff;">💳 收入:</span>{{ todo.payment
+                        ||
                         '...' }}
                 </div>
+                
                 <div class="todotags">{{ todo.tags }}</div>
 
             </div>
 
         </div>
+
+
         <div class="todofooter">
 
         </div>
-
+        
     </div>
 </template>
 
@@ -58,7 +66,7 @@ const todotime = computed(() => {
 
 const getTodo = computed(() => {
     // console.log(props.todos)
-    return props.todos || {}
+    return props.todos
 })
 
 const todotags = computed(() => {
@@ -134,9 +142,38 @@ onUpdated(() => {
 }
 
 .todobody {
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 3px;
+    }
+
+    /* 滚动条有滑块的轨道部分 */
+    ::-webkit-scrollbar-track-piece {
+        background-color: transparent;
+        border-radius: 5px;
+    }
+
+    /* 滚动条滑块(竖向:vertical 横向:horizontal) */
+    ::-webkit-scrollbar-thumb {
+        cursor: pointer;
+        background-color: #f2f2f2;
+        border-radius: 5px;
+    }
+
+    /* 滚动条滑块hover */
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #999999;
+    }
+
+    /* 同时有垂直和水平滚动条时交汇的部分 */
+    ::-webkit-scrollbar-corner {
+        display: block;
+        /* 修复交汇时出现的白块 */
+    }
+
     width: 100%;
     position: relative;
-    max-height: 60vh;
+    // max-height: 60vh;
     transition: .5s all ease;
     .padding10px;
 
@@ -176,7 +213,7 @@ onUpdated(() => {
             height: 100%;
             width: 5px;
             top: 0;
-            left: 10px;
+            left: 20px;
             background-color: #F97F51;
         }
 
@@ -186,7 +223,7 @@ onUpdated(() => {
             height: 10px;
             width: 10px;
             top: -6px;
-            left: .5em;
+            left: 18px;
             border-radius: 50%;
             background-color: #55e6c1;
             border: 2px solid #000;
@@ -235,7 +272,7 @@ onUpdated(() => {
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
             top: 0;
-            left: 10px;
+            left: 20px;
             background-color: #F97F51;
         }
 
@@ -245,7 +282,7 @@ onUpdated(() => {
             height: 10px;
             width: 10px;
             top: -6px;
-            left: .5em;
+            left: 18px;
             border-radius: 50%;
             background-color: #55e6c1;
 
@@ -299,13 +336,13 @@ onUpdated(() => {
             height: 0;
             width: 0;
             top: 45%;
-            left: 10px;
-            background-color: #55e6c1;
+            left: -100px;
+            background-color: #ffffff00;
         }
 
         text-align: center;
     }
 
-    
+
 }
 </style>
