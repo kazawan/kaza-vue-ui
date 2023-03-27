@@ -92,7 +92,7 @@ const showTodoByTag = (tag) => {
         } else {
             item.style.display = 'block'
         }
-        if(tag === '全部'){
+        if(tag === '🤞全部'){
             item.style.display = 'block'
         }
     })
