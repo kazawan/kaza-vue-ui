@@ -179,13 +179,16 @@ const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const mouseSelected = ref('today')
 
 const emit = defineEmits(["clickItem"]);
+// 添加鼠标选中日期的自动更新
 const clickauto = (data) => {
     const index = data.indexOf('-')
     mouseSelected.value = data.substring(index + 1)
 }
+
+// 添加鼠标选中日期的自动更新
 const clickItem = (data) => {
-    clickauto(data)
-    emit("clickItem", data)
+    clickauto(data) // 鼠标选中日期的自动更新
+    emit("clickItem", data) // 触发clickItem事件
 }
 
 

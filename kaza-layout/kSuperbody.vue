@@ -28,6 +28,11 @@ const devivesSet = {
         bgcolor: '#55E6C1',
         fontSize: props.iphoneSize || '24px'
     },
+    'Android': {
+        name: 'Android...',
+        bgcolor: '#FFC312',
+        fontSize: props.androidSize || '20px'
+    },
 }
 const devicesCheck = () => {
     const userAgentDevies = navigator.userAgent

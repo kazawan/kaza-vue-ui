@@ -41,7 +41,7 @@ export default {
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUpdated } from 'vue';
 // 定义props
 const props = defineProps({
     // 日期
@@ -61,7 +61,16 @@ const getTodo = computed(() => {
     return props.todos || {}
 })
 
-const todotags = computed(() => [...new Set(props.todos.map(item => item.tags))]);
+const todotags = computed(() => {
+    if (props.todos) {
+        return [...new Set(props.todos.map(item => item.tags))];
+    } else {
+        return ['NO TAGS'];
+    }
+});
+
+
+
 /**
  * todo以下这段是ai写的
  */
@@ -87,6 +96,10 @@ const addTagClickEvent = () => {
 }
 
 onMounted(() => {
+    addTagClickEvent()
+})
+
+onUpdated(() => {
     addTagClickEvent()
 })
 // const todotags = computed(()=>{
@@ -145,12 +158,17 @@ onMounted(() => {
     .todosideline {
         position: relative;
         width: 100%;
+
         // max-height: 50%;
         .paddingLR20px;
         padding-top: 5px;
         background-color: #ccc;
         transition: .5s all ease;
         color: #181818;
+
+        //添加hover效果
+        //添加hover效果
+
 
         &::before {
             content: '';
@@ -251,12 +269,14 @@ onMounted(() => {
     .todotagsgroup {
         .todofooter;
         border-radius: 0;
-        .ttags{
+
+        .ttags {
             background-color: #F97F51;
-            padding: 0  5px 0 5px;
+            padding: 0 5px 0 5px;
             border-radius: 5px;
             margin-right: .2em;
             font-size: .8em;
+            cursor: pointer;
         }
     }
 
@@ -285,5 +305,7 @@ onMounted(() => {
 
         text-align: center;
     }
+
+    
 }
 </style>

@@ -6,6 +6,17 @@ export default {
 
 <script setup>
 import { computed, reactive, onMounted, onBeforeUnmount, getCurrentInstance, ref, onBeforeMount, onUpdated } from 'vue';
+
+/**
+ * 
+ * * Props:
+ * * justify: String, default: 'flex-start'  对齐方式
+ * * gutter: [String, Number], default: 0 // 栅格间隔
+ * * wrap: String, default: 'wrap' // 换行方式
+ * * mb: [String, Number], default: 0 // 底部边距
+ * * mt: [String, Number], default: 0 // 顶部边距
+ */
+
 const props = defineProps({
     justify: {
         type: String,
