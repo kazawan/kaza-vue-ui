@@ -55,14 +55,6 @@ const todolist = {
 
 ## :floppy_disk:Api
 
-```
-<template>
-
-    <kazaCharts options="{}" />
-</template>
-
-
-```
 
 | :clipboard: | :bar_chart: api | :pushpin:类型 | :pencil2:默认值 |    :ledger:备注    |
 | :---------: | :-------------: | :-----------: | :-------------: | :----------------: |
