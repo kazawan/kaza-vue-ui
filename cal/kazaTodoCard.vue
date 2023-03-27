@@ -9,7 +9,7 @@ export default {
         <div class="todotime">
             📟Date:{{ todotime }}
         </div>
-        <div class="todotagsgroup">tags: <span class="ttags" v-for="todotag in todotags">{{ todotag }}</span></div>
+        <div class="todotagsgroup">tags: <span class="ttags"  style="background-color: #55e6c1;">🤞全部</span> <span class="ttags" v-for="todotag in todotags">{{ todotag }}</span></div>
 
         <div v-if="!getTodo" class="nodata">NO DATA</div>
         <div v-for="todo in getTodo" class="todosideline">
@@ -82,17 +82,23 @@ const todotags = computed(() => {
 /**
  * todo以下这段是ai写的
  */
-//为todotags添加点击事件，只显示tags的日程
+// 为todotags添加点击事件，只显示tags的日程
 const showTodoByTag = (tag) => {
     const todoList = document.querySelectorAll('.todosideline')
     todoList.forEach(item => {
+        
         if (item.querySelector('.todotags').textContent !== tag) {
             item.style.display = 'none'
         } else {
             item.style.display = 'block'
         }
+        if(tag === '全部'){
+            item.style.display = 'block'
+        }
     })
 }
+
+
 
 const addTagClickEvent = () => {
     const tagList = document.querySelectorAll('.ttags')
@@ -102,6 +108,10 @@ const addTagClickEvent = () => {
         })
     })
 }
+
+
+
+
 
 onMounted(() => {
     addTagClickEvent()

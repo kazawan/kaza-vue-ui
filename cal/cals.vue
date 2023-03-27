@@ -8,7 +8,7 @@ export default {
 import { onMounted, ref, computed, defineExpose, TransitionGroup, onUpdated } from 'vue';
 
 const props = defineProps({
-    data: Object
+    data: Object,
 })
 
 
@@ -218,7 +218,7 @@ const clickItem = (data) => {
                 <div v-for=" (d, index) in days.day" class="day">
                     <div @click="clickItem(days.year[index] + '-' + days.month[index] + '-' + d)"
                         :class="['item', days.month[index] === Month ? '' : 'xmonth', days.day[index] === new Date().getDate() && days.month[index] === new Date().getMonth() + 1 && days.year[index] === new Date().getFullYear() ? 'today' : '']"
-                        :year="days.year[index]" :month="days.month[index]" :day="d" :key="index" ref="cals">{{ d }}
+                        :year="days.year[index]" :month="days.month[index]" :day="d" :key="index" ref="cals">{{ d  }}
 
                     </div>
                 </div>
