@@ -11,7 +11,7 @@ export default {
         </div>
         <div class="todotagsgroup">tags: <span class="ttags"  style="background-color: #55e6c1;">🤞全部</span> <span class="ttags" v-for="todotag in todotags">{{ todotag }}</span></div>
 
-        <div v-if="!getTodo" class="nodata">NO DATA</div>
+        <div v-if="!getTodo" class="nodata">💔NO DATA</div>
         <div v-for="todo in getTodo" class="todosideline">
 
             <div style="border-bottom:3px dotted #2C3A47;">
@@ -71,7 +71,12 @@ const getTodo = computed(() => {
 
 const todotags = computed(() => {
     if (props.todos) {
-        return [...new Set(props.todos.map(item => item.tags))];
+        try {
+            return [...new Set(props.todos.map(item => item.tags))];
+        } catch (error) {
+            console.log(error);
+            return ['NO TAGS'];
+        }
     } else {
         return ['NO TAGS'];
     }
@@ -86,7 +91,6 @@ const todotags = computed(() => {
 const showTodoByTag = (tag) => {
     const todoList = document.querySelectorAll('.todosideline')
     todoList.forEach(item => {
-        
         if (item.querySelector('.todotags').textContent !== tag) {
             item.style.display = 'none'
         } else {
@@ -100,14 +104,30 @@ const showTodoByTag = (tag) => {
 
 
 
+// const addTagClickEvent = () => {
+//     const tagList = document.querySelectorAll('.ttags')
+//     tagList.forEach(item => {
+//         item.addEventListener('click', () => {
+//             showTodoByTag(item.textContent)
+//         })
+//     })
+// }
+
+// 添加标签点击事件
 const addTagClickEvent = () => {
+    // 获取所有标签
     const tagList = document.querySelectorAll('.ttags')
-    tagList.forEach(item => {
-        item.addEventListener('click', () => {
-            showTodoByTag(item.textContent)
+    // 遍历标签列表
+    tagList.forEach(tagItem => {
+        // 给每个标签添加点击事件
+        tagItem.addEventListener('click', () => {
+            // 显示对应标签的任务
+            showTodoByTag(tagItem.textContent)
         })
     })
 }
+
+
 
 
 
