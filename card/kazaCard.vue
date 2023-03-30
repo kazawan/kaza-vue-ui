@@ -67,7 +67,7 @@ const getTitleColor = computed(() => {
     border-top-left-radius: .3rem;
     border-top-right-radius: .3rem;
     padding: 0 10px 0 10px;
-    font-size: .9rem;
+    font-size: .8rem;
     line-height: 1.2rem;
     color: #fff;
     overflow: hidden;
@@ -84,7 +84,7 @@ const getTitleColor = computed(() => {
     // text-transform: uppercase;
     height: .8rem;
     border-radius: 0;
-    font-size: .4rem;
+    font-size: .5rem;
     line-height: .8rem;
 
 

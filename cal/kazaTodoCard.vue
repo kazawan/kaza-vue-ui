@@ -133,20 +133,18 @@ const addTagClickEvent = () => {
 
 
 
+
+
 onMounted(() => {
     addTagClickEvent()
+    
 })
 
 onUpdated(() => {
     addTagClickEvent()
+    
 })
-// const todotags = computed(()=>{
-//     let temp = []
-//     props.todos.forEach(item=>{
-//         temp.push(item.tags)
-//     })
-//     return temp
-// })
+
 
 
 
@@ -155,6 +153,7 @@ onUpdated(() => {
 </script >
 
 <style lang='less' scoped>
+
 .paddingLR {
     padding: 0 10px 0 10px;
 }
@@ -203,9 +202,9 @@ onUpdated(() => {
 
     width: 100%;
     position: relative;
-    // max-height: 60vh;
-    transition: .5s all ease;
-    .padding10px;
+    max-height: 30vh;
+    // transition: .5s all ease;
+    .paddingLR;
 
     font-size: 16px;
     overflow-y: scroll;
@@ -332,17 +331,20 @@ onUpdated(() => {
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
     }
-
+    
     .todotagsgroup {
         .todofooter;
+        height: auto;
         border-radius: 0;
-
+        padding-bottom: 5px;
+        
         .ttags {
             background-color: #F97F51;
             padding: 0 5px 0 5px;
             border-radius: 5px;
             margin-right: .2em;
             font-size: .8em;
+            user-select: none;
             cursor: pointer;
         }
     }

@@ -5,12 +5,15 @@ export default {
 }
 </script>
 <script setup>
-import { onMounted, ref, computed, defineExpose, TransitionGroup, onUpdated } from 'vue';
-
+import { onMounted, ref, computed, TransitionGroup, onUpdated } from 'vue';
+// import kazatodo from './kazaTodoCard.vue';
 const props = defineProps({
     data: Object,
 })
-
+const calsyymmdd = ref(`${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`)
+const getCalsyymmdd = () => {
+    return calsyymmdd.value
+}
 
 const currentDate = new Date()
 const today = ref(currentDate.getDate())
@@ -143,15 +146,7 @@ function eMonitor() {
     })
 }
 
-onMounted(() => {
-    eMonitor()
-    // console.log(props.data)
 
-})
-
-onUpdated(() => {
-    eMonitor()
-})
 
 defineExpose({
     // 当前选中的日期
@@ -173,16 +168,19 @@ defineExpose({
         Month.value = currentDate.getMonth() + 1
         Year.value = currentDate.getFullYear()
     },
+    eMonitor//外部更新待办事项数量
 })
 
 const weekDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const mouseSelected = ref('today')
+
 
 const emit = defineEmits(["clickItem"]);
 // 添加鼠标选中日期的自动更新
 const clickauto = (data) => {
     const index = data.indexOf('-')
     mouseSelected.value = data.substring(index + 1)
+    calsyymmdd.value = data
 }
 
 // 添加鼠标选中日期的自动更新
@@ -190,6 +188,47 @@ const clickItem = (data) => {
     clickauto(data) // 鼠标选中日期的自动更新
     emit("clickItem", data) // 触发clickItem事件
 }
+// const calsHeight = ref(getHeight())
+
+const getHeight = () => {
+    let calsmaintop = document.querySelector('.calsmain').parentNode
+    console.log(Number(calsmaintop.offsetHeight) * .8)
+    let res = String(Number(calsmaintop.offsetHeight) * .8)
+//获取父级元素的高度
+    // let calsmainHeight = calsmain.offsetHeight
+    return res  + 'px'
+}
+
+const getWidth = () =>{
+    let calsmaintop = document.querySelector('.calsmain').parentNode
+    // console.log(Number(calsmaintop.offsetWidth) * .2)
+    let res = String(Number(calsmaintop.offsetWidth) * .2) < 200 ? 200 : String(Number(calsmaintop.offsetWidth) * .2)
+    return res + 'px'
+}
+
+const getTodo = computed(()=>{
+    return (date)=>{
+        let res
+        Object.keys(props.data).forEach((item)=>{
+            if(item === date){
+                res = props.data[item].todo
+            }
+        })
+        return res
+    }
+})
+
+
+
+onMounted(() => {
+    eMonitor()
+    
+
+})
+
+onUpdated(() => {
+    eMonitor()
+})
 
 
 
@@ -197,7 +236,8 @@ const clickItem = (data) => {
 </script >
 
 <template>
-    <div class="calsbody" >
+    <div class="calsmain">
+        <div class="calsbody" >
         <div class="top">
             <div class="year">
                 🗓️{{ Year }}
@@ -230,22 +270,40 @@ const clickItem = (data) => {
             <div class="reset" @click="reset">reset</div>
             <div class="next" @click="next">next</div>
         </div>
+        
     </div>
+    <!-- <div class="calstodo">
+        <kazatodo :date="getCalsyymmdd()" :todos="getTodo(getCalsyymmdd()) " ></kazatodo>
+        
+    </div> -->
+    </div>
+    
 </template>
 
 
 
 <style lang='less' scoped>
 
-@width: 100%;
+@width: 50%;
+@calsbodyWidth:v-bind(getWidth() );
+@calsHeight:v-bind(getHeight() );
 .pointer {
     cursor: pointer;
 }
 
-
+.calsmain{
+    width: 100%;
+    // height: 200px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+}
 .calsbody{
-    width: @width;
+    position: relative;
+    width: @calsbodyWidth;
     height: @width;
+    flex-shrink: 0;
 }
 
 .top {
@@ -306,7 +364,8 @@ const clickItem = (data) => {
 
 .container {
     width: 100%;
-    height: 80%;
+    // height: @calsHeight;
+    height: 180px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -404,13 +463,43 @@ const clickItem = (data) => {
     }
 }
 
+.calstodo{
+    width: 80%;
+    height: @calsHeight;
+}
 
 
 
 
 
+::-webkit-scrollbar {
+  width: 10px;
+  height: 3px;
+}
 
+/* 滚动条有滑块的轨道部分 */
+::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+  border-radius: 5px;
+}
 
+/* 滚动条滑块(竖向:vertical 横向:horizontal) */
+::-webkit-scrollbar-thumb {
+  cursor: pointer;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+}
+
+/* 滚动条滑块hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #999999;
+}
+
+/* 同时有垂直和水平滚动条时交汇的部分 */
+::-webkit-scrollbar-corner {
+  display: block;
+  /* 修复交汇时出现的白块 */
+}
 
 
 // .day:nth-child(even){
