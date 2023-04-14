@@ -199,6 +199,11 @@ const getHeight = () => {
     return res  + 'px'
 }
 
+// 这段代码用于让一个 div 宽度变成其父级 div 宽度的 20%
+// calsmaintop 是父级 div
+// res 是子 div 的宽度
+// 三元运算符用于确保子 div 至少是 200px 宽
+
 const getWidth = () =>{
     let calsmaintop = document.querySelector('.calsmain').parentNode
     // console.log(Number(calsmaintop.offsetWidth) * .2)
@@ -206,17 +211,28 @@ const getWidth = () =>{
     return res + 'px'
 }
 
-const getTodo = computed(()=>{
-    return (date)=>{
-        let res
-        Object.keys(props.data).forEach((item)=>{
-            if(item === date){
-                res = props.data[item].todo
+const getTodo = computed(()=>{ // computed 获取todo列表
+    return (date)=>{ // 返回一个函数
+        let res = null // 定义一个变量
+        Object.keys(props.data).forEach((item)=>{ // 循环props.data key
+            if(item === date){ // 匹配日期
+                res = props.data[item].todo // 获取todo列表
             }
         })
-        return res
+        return res // 返回todo列表
     }
 })
+// const getTodo = computed(()=>{
+//     return (date)=>{
+//         let res
+//         Object.keys(props.data).forEach((item)=>{
+//             if(item === date){
+//                 res = props.data[item].todo
+//             }
+//         })
+//         return res
+//     }
+// })
 
 
 
